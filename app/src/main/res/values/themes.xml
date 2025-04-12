@@ -1,0 +1,8 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.SoundPlay" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#337AB7</item>
+        <item name="colorPrimaryDark">#276496</item>
+        <item name="colorAccent">#5DD9E6</item>
+        <item name="android:statusBarColor" tools:targetApi="l">#276496</item>
+    </style>
+</resources>
