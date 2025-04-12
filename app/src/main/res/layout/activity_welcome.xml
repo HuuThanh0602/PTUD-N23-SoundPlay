@@ -1,0 +1,81 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/welcome"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/brackground"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/iconWelcome"
+        android:layout_width="256dp"
+        android:layout_height="400dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="54dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/ic_welcome" />
+
+    <TextView
+        android:id="@+id/tva"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Bạn đã có tài khoản chưa?"
+        android:layout_below="@id/iconWelcome"
+        android:textColor="#D3D3D3"
+        android:textSize="22sp" />
+    <LinearLayout
+        android:id="@+id/layoutTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:layout_below="@id/tva"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SOUND"
+            android:textColor="@color/white"
+            android:textSize="60dp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/Title2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PLAY"
+            android:textColor="@color/black"
+            android:textSize="60dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="165dp"
+        android:layout_height="44.37dp"
+        android:layout_below="@id/layoutTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_login"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="380dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnStart"
+        android:layout_marginTop="10dp"
+        android:text=""
+        android:textColor="#FF0000" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="60dp"
+        android:layout_height="66dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="225dp"
+        android:src="@drawable/ic_music2" />
+</RelativeLayout>
