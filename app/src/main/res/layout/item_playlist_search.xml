@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:background="@color/brackground">
+
+    <!-- Ảnh playlist -->
+    <ImageView
+        android:id="@+id/imageplaylist"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:scaleType="centerCrop"
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/pictr_1" />
+
+    <!-- Nội dung bên phải -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="12dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvplaylistTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3:00am vibes"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvplaylist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="18 songs"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <!-- Mũi tên chỉ qua phải -->
+    <ImageView
+        android:id="@+id/arrowIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/ic_arrow_right"
+        android:contentDescription="Arrow" />
+</LinearLayout>
