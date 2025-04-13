@@ -88,5 +88,33 @@ public class MusicRepository {
         });
     }
 
+    public interface NewReleaseCallback {
+        void onSuccess(List<Music> newReleases);
+        void onError(String errorMessage);
+    }
+
+    public void getNewReleaseChart(final NewReleaseCallback callback) {
+        Call<Map<String, Object>> call = apiService.getNewReleaseChart();
+
+        call.enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(@NonNull Call<Map<String, Object>> call, @NonNull Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Object dataObj = response.body().get("data");
+                    String jsonArray = gson.toJson(dataObj);
+                    Type listType = new TypeToken<List<Music>>() {}.getType();
+                    List<Music> newReleaseList = gson.fromJson(jsonArray, listType);
+                    callback.onSuccess(newReleaseList);
+                } else {
+                    callback.onError("Lỗi: Dữ liệu trả về không hợp lệ.");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Map<String, Object>> call, @NonNull Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
 
 }

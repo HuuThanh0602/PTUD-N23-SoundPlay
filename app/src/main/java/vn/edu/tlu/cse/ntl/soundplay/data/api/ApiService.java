@@ -18,7 +18,8 @@ public interface ApiService {
     @GET("chart")
     Call<Object> getChartHome();
     @GET("new-release")
-    Call<Object> getNewReleaseChart();
+    Call<Map<String, Object>> getNewReleaseChart();
+
     @GET("info")
     Call<Object> getInfoSong(@Query("id") String id);
     @GET("artist")
@@ -35,4 +36,6 @@ public interface ApiService {
     Call<Object> getCategoryMV();
     @GET("video")
     Call<Object> getVideo(@Query("id") String id);
+
+
 }
