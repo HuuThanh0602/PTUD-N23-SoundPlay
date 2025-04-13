@@ -86,6 +86,58 @@ public class MusicRepository {
             }
         });
     }
+    public void getForYou(final Top100Callback callback) {
+        Call<Map<String, Object>> call = apiService.getForYou();
+
+        call.enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(@NonNull Call<Map<String, Object>> call, @NonNull Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Object dataObj = response.body().get("data");
+
+                    String jsonArray = gson.toJson(dataObj);
+                    Type listType = new TypeToken<List<PlayList>>() {}.getType();
+                    List<PlayList> list = gson.fromJson(jsonArray, listType);
+
+                    callback.onSuccess(list);
+                } else {
+                    callback.onError("Lỗi: Dữ liệu /for_you không hợp lệ.");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Map<String, Object>> call, @NonNull Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void getRecent(final Top100Callback callback) {
+        Call<Map<String, Object>> call = apiService.getRecent();
+
+        call.enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(@NonNull Call<Map<String, Object>> call, @NonNull Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Object dataObj = response.body().get("data");
+
+                    String jsonArray = gson.toJson(dataObj);
+                    Type listType = new TypeToken<List<PlayList>>() {}.getType();
+                    List<PlayList> list = gson.fromJson(jsonArray, listType);
+
+                    callback.onSuccess(list);
+                } else {
+                    callback.onError("Lỗi: Dữ liệu /recent không hợp lệ.");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Map<String, Object>> call, @NonNull Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
 
 
 

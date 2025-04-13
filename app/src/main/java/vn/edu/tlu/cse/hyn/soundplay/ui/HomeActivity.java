@@ -19,6 +19,8 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import vn.edu.tlu.cse.hyn.soundplay.R;
 import vn.edu.tlu.cse.hyn.soundplay.adapter.MixAdapter;
+import vn.edu.tlu.cse.hyn.soundplay.adapter.MusicAdapter;
+import vn.edu.tlu.cse.hyn.soundplay.adapter.RecentAdapter;
 import vn.edu.tlu.cse.hyn.soundplay.data.model.PlayList;
 import vn.edu.tlu.cse.hyn.soundplay.data.repository.MusicRepository;
 
@@ -47,9 +49,14 @@ public class HomeActivity extends AppCompatActivity {
 
         loadUserProfile();
 
-        // Cài layout và đổ dữ liệu cho mục "Dành cho bạn"
+        // Thiết lập layout cho từng RecyclerView
+        recyclerRecent.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerForYou.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        getTop100Music(); // Gọi API để lấy dữ liệu top 100
+        recyclerRecentPlays.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        getTop100Music();
+        getForYouMusic();
+        getRecentMusic();
+        // Gọi API để lấy dữ liệu top 100
 
         // Chuyển sang Hồ sơ
         navProfile.setOnClickListener(v -> {
@@ -75,8 +82,8 @@ public class HomeActivity extends AppCompatActivity {
                     Log.d("Top100", "ID: " + playList.getId() + ", Tên: " + playList.getTitle() + ", Ảnh: " + playList.getThumbnail());
                 }
                 // Đổ dữ liệu vào RecyclerView
-                MixAdapter mixAdapter = new MixAdapter(top100List);
-                recyclerForYou.setAdapter(mixAdapter);
+                MusicAdapter musicAdapter = new MusicAdapter(top100List);
+                recyclerForYou.setAdapter(musicAdapter);
             }
 
             @Override
@@ -85,6 +92,40 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+    private void getForYouMusic() {
+        musicRepository.getTop100(new MusicRepository.Top100Callback() {
+            @Override
+            public void onSuccess(List<PlayList> top100List) {
+                // Chọn ngẫu nhiên 5 bài
+                List<PlayList> randomList = top100List.subList(0, Math.min(5, top100List.size()));
+                MixAdapter mixAdapter = new MixAdapter(randomList);
+                recyclerForYou.setAdapter(mixAdapter);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("ForYou", "Lỗi: " + errorMessage);
+            }
+        });
+    }
+    private void getRecentMusic() {
+        musicRepository.getTop100(new MusicRepository.Top100Callback() {
+            @Override
+            public void onSuccess(List<PlayList> top100List) {
+                // Lấy 3 bài mới nhất (hoặc do người dùng nghe gần đây nếu có lưu local)
+                List<PlayList> recentList = top100List.subList(0, Math.min(3, top100List.size()));
+                RecentAdapter recentAdapter = new RecentAdapter(recentList);
+                recyclerRecentPlays.setAdapter(recentAdapter);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("Recent", "Lỗi: " + errorMessage);
+            }
+        });
+    }
+
+
 
     @Override
     protected void onResume() {

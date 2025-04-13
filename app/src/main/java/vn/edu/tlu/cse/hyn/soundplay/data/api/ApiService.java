@@ -15,6 +15,12 @@ public interface ApiService {
     Call<Object> getHome();
     @GET("top100")
     Call<Map<String, Object>> getTop100();
+    @GET("for_you")
+    Call<Map<String, Object>> getForYou();
+
+    @GET("recent")
+    Call<Map<String, Object>> getRecent();
+
     @GET("search")
     Call<Map<String, Object>> search(@Query("keyword") String keyword);
     @GET("chart")

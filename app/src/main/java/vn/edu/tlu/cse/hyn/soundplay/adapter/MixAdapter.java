@@ -37,6 +37,8 @@ public class MixAdapter extends RecyclerView.Adapter<MixAdapter.MixViewHolder> {
         PlayList item = mixList.get(position);
         Glide.with(holder.itemView.getContext())
                 .load(item.getThumbnail())
+                .placeholder(R.drawable.ic_music)
+                .error(R.drawable.ic_music)
                 .into(holder.imgCover);
     }
 

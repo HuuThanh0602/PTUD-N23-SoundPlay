@@ -38,7 +38,8 @@
             android:gravity="center_vertical"
             android:text="  Bài hát bạn đã thích"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textStyle="bold"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <!-- Danh sách thể loại -->

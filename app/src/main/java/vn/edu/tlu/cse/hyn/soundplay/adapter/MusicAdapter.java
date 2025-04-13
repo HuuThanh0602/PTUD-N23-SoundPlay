@@ -10,18 +10,22 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 import vn.edu.tlu.cse.hyn.soundplay.R;
 import vn.edu.tlu.cse.hyn.soundplay.data.model.Music;
+import vn.edu.tlu.cse.hyn.soundplay.data.model.PlayList;
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHolder> {
 
-    private List<Music> list;
+    private List<PlayList> list;
 
-    public MusicAdapter(List<Music> list) {
+    public MusicAdapter(List<PlayList> list) {
         this.list = list;
     }
+
 
     @NonNull
     @Override
@@ -32,9 +36,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MusicViewHolder holder, int position) {
-        Music item = list.get(position);
+        PlayList item = list.get(position);
         holder.txtTitle.setText(item.getTitle());
         //holder.imgCover.setImageResource(item.getUrl());
+        Glide.with(holder.itemView.getContext())
+                .load(item.getThumbnail()) // Load ảnh từ URL
+                .placeholder(R.drawable.ic_music)
+                .error(R.drawable.ic_music)
+                .into(holder.imgCover);
     }
 
     @Override
