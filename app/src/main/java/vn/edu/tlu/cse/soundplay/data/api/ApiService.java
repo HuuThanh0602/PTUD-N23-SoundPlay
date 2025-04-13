@@ -14,7 +14,9 @@ public interface ApiService {
     @GET("home")
     Call<Object> getHome();
     @GET("top100")
-    Call<Object> getTop100();
+    Call<Map<String, Object>> getTop100();
+    @GET("search")
+    Call<Map<String, Object>> search(@Query("keyword") String keyword);
     @GET("chart")
     Call<Object> getChartHome();
     @GET("new-release")
@@ -27,8 +29,7 @@ public interface ApiService {
     Call<Object> getListArtistSong(@Query("id") String id);
     @GET("lyric")
     Call<Object> getLyric(@Query("id") String id);
-    @GET("search")
-    Call<Map<String, Object>> search(@Query("keyword") String keyword);
+
     @GET("mv")
     Call<Object> getListMV();
     @GET("category-mv")
