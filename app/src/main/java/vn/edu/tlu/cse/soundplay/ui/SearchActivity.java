@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.List;
 import vn.edu.tlu.cse.soundplay.R;
 import vn.edu.tlu.cse.soundplay.data.model.Music;
-import vn.edu.tlu.cse.soundplay.data.model.PlayList;
+import vn.edu.tlu.cse.soundplay.data.model.Playlist;
 import vn.edu.tlu.cse.soundplay.data.repository.MusicRepository;
 
 public class SearchActivity extends AppCompatActivity {
@@ -22,8 +22,8 @@ public class SearchActivity extends AppCompatActivity {
 
         String keyword = "em cua ngay hom qua";
         //searchMusic(keyword);
-
-        getTop100Music();
+        getNewReleaseMusic();
+        //getTop100Music();
     }
 
     private void searchMusic(String keyword) {
@@ -45,8 +45,8 @@ public class SearchActivity extends AppCompatActivity {
     private void getTop100Music() {
         musicRepository.getTop100(new MusicRepository.Top100Callback() {
             @Override
-            public void onSuccess(List<PlayList> top100List) {
-                for (PlayList playLists : top100List) {
+            public void onSuccess(List<Playlist> top100List) {
+                for (Playlist playLists : top100List) {
                     Log.d("Top100", "ID: " + playLists.getId() + ", Tên bài hát: " + playLists.getTitle() + ", Ảnh: " + playLists.getThumbnail());
                 }
             }
@@ -57,4 +57,22 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
     }
+
+    //bài hát mới nhất
+    private void getNewReleaseMusic() {
+        musicRepository.getNewReleaseChart(new MusicRepository.NewReleaseCallback() {
+            @Override
+            public void onSuccess(List<Music> newReleases) {
+                for (Music music : newReleases) {
+                    Log.d("NewRelease", "ID: " + music.getId() + ", Tên bài hát: " + music.getTitle() + ", Ảnh: " + music.getThumbnail());
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("NewRelease", "Lỗi: " + errorMessage);
+            }
+        });
+    }
+
 }

@@ -7,11 +7,8 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "musics")
 public class Music {
-
-
     @SerializedName("id")
     private String id;
-
     private String title;
     private String thumbnail;
     private String url;

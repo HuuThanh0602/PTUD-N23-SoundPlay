@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 
 @Entity(tableName = "play_list")
-public class PlayList {
+public class Playlist {
     @SerializedName("id")
     private String id;
 
@@ -14,7 +14,7 @@ public class PlayList {
     private String thumbnail;
     private String url;
 
-    public PlayList(String title, String thumbnail, String url) {
+    public Playlist(String title, String thumbnail, String url) {
         this.title = title;
         this.thumbnail = thumbnail;
         this.url = url;

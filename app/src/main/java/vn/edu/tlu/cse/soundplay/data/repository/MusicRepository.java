@@ -1,6 +1,5 @@
 package vn.edu.tlu.cse.soundplay.data.repository;
 
-
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
@@ -16,7 +15,7 @@ import retrofit2.Response;
 import vn.edu.tlu.cse.soundplay.data.api.ApiClient;
 import vn.edu.tlu.cse.soundplay.data.api.ApiService;
 import vn.edu.tlu.cse.soundplay.data.model.Music;
-import vn.edu.tlu.cse.soundplay.data.model.PlayList;
+import vn.edu.tlu.cse.soundplay.data.model.Playlist;
 
 public class MusicRepository {
 
@@ -28,14 +27,22 @@ public class MusicRepository {
         apiService = ApiClient.getClient(BASE_URL).create(ApiService.class);
         gson = new Gson();
     }
+
     public interface SearchCallback {
         void onSearchCompleted(List<Music> musics);
         void onSearchError(String error);
     }
+
     public interface Top100Callback {
-        void onSuccess(List<PlayList> top100List);
+        void onSuccess(List<Playlist> top100List);
         void onError(String errorMessage);
     }
+
+    public interface NewReleaseCallback {
+        void onSuccess(List<Music> newReleases);
+        void onError(String errorMessage);
+    }
+
     public void search(String keyword, final SearchCallback callback) {
         Call<Map<String, Object>> call = apiService.search(keyword);
 
@@ -45,11 +52,9 @@ public class MusicRepository {
                                    @NonNull Response<Map<String, Object>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Object dataObj = response.body().get("data");
-
                     String jsonArray = gson.toJson(dataObj);
                     Type listType = new TypeToken<List<Music>>() {}.getType();
                     List<Music> musics = gson.fromJson(jsonArray, listType);
-
                     callback.onSearchCompleted(musics);
                 }
             }
@@ -69,11 +74,9 @@ public class MusicRepository {
             public void onResponse(@NonNull Call<Map<String, Object>> call, @NonNull Response<Map<String, Object>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Object dataObj = response.body().get("data");
-
                     String jsonArray = gson.toJson(dataObj);
-                    Type listType = new TypeToken<List<PlayList>>() {}.getType();
-                    List<PlayList> top100List = gson.fromJson(jsonArray, listType);
-
+                    Type listType = new TypeToken<List<Playlist>>() {}.getType();
+                    List<Playlist> top100List = gson.fromJson(jsonArray, listType);
                     callback.onSuccess(top100List);
                 } else {
                     callback.onError("Lỗi: Dữ liệu trả về không hợp lệ.");
@@ -87,6 +90,29 @@ public class MusicRepository {
         });
     }
 
+    //bài hát mới nhất
+    public void getNewReleaseChart(final NewReleaseCallback callback) {
+        Call<Map<String, Object>> call = apiService.getNewReleaseChart();
 
+        call.enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(@NonNull Call<Map<String, Object>> call, @NonNull Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Object dataObj = response.body().get("data");
+                    String jsonArray = gson.toJson(dataObj);
+                    Type listType = new TypeToken<List<Music>>() {}.getType();
+                    List<Music> newReleaseList = gson.fromJson(jsonArray, listType);
+                    callback.onSuccess(newReleaseList);
+                } else {
+                    callback.onError("Lỗi: Dữ liệu trả về không hợp lệ.");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Map<String, Object>> call, @NonNull Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
 
 }
