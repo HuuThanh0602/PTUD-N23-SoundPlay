@@ -34,6 +34,6 @@ Sound Play là ứng dụng phát nhạc trực tuyến được thiết kế ch
 
 
 ## 👨‍💻 Nhóm Phát Triển
-Nguyen Huu Thanh
-Nguyen Thuy Linh
-Hoang Yen Nhi
+- Nguyen Huu Thanh
+- Nguyen Thuy Linh
+- Hoang Yen Nhi
