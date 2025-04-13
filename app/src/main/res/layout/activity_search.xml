@@ -17,7 +17,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp">
+            android:layout_marginTop="15dp">
 
             <ImageView
                 android:id="@+id/imgNote"
@@ -63,7 +63,7 @@
                 android:paddingStart="8dp"
                 android:textColor="#000000"
                 android:textColorHint="#888888"
-                android:hint="Tìm kiếm playlist..."
+                android:hint="Tìm kiếm bài hát..."
                 android:inputType="text" />
         </LinearLayout>
 
@@ -80,7 +80,7 @@
 
         <!-- Danh sách thể loại (hiển thị mặc định) -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCategories"
+            android:id="@+id/rvplaylist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

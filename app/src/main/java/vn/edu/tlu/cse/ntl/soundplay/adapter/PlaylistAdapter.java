@@ -1,5 +1,6 @@
 package vn.edu.tlu.cse.ntl.soundplay.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,27 +10,29 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import vn.edu.tlu.cse.ntl.soundplay.R;
 import vn.edu.tlu.cse.ntl.soundplay.data.model.Playlist;
 
+
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder> {
 
-    private List<Playlist> playlistList = new ArrayList<>();
+    private List<Playlist> playlists = new ArrayList<>();
 
-    public PlaylistAdapter() {
-        this.playlistList = new ArrayList<>();
-    }
+    public PlaylistAdapter() {}
 
     public PlaylistAdapter(List<Playlist> playlistList) {
-        this.playlistList = playlistList;
+        this.playlists = playlistList;
     }
 
-    public void setData(List<Playlist> newList) {
-        playlistList = newList;
+    public void setData(List<Playlist> playlists) {
+        this.playlists = playlists;
         notifyDataSetChanged();
+        Log.d("PlaylistAdapter", "Số lượng playlist sau khi cập nhật: " + playlists.size());
     }
 
     @NonNull
@@ -41,26 +44,31 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
 
     @Override
     public void onBindViewHolder(@NonNull PlaylistViewHolder holder, int position) {
-        Playlist playlist = playlistList.get(position);
-        holder.tvTitle.setText(playlist.title);
-        holder.tvDesc.setText(playlist.description);
-        holder.image.setImageResource(playlist.imageResId);
+        Playlist playlist = playlists.get(position);
+
+        if (playlist.getThumbnail() != null && !playlist.getThumbnail().isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(playlist.getThumbnail())
+                    .placeholder(R.drawable.icon_kpop)
+                    .error(R.drawable.icon_kpop)
+                    .into(holder.image);
+        } else {
+            holder.image.setImageResource(R.drawable.icon_kpop);
+            Log.d("PlaylistAdapter", "Thumbnail is empty for playlist: " + playlist.getTitle());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return playlistList.size();
+        return playlists.size();
     }
 
     static class PlaylistViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
-        TextView tvTitle, tvDesc;
 
         public PlaylistViewHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.imageplaylist);
-            tvTitle = itemView.findViewById(R.id.tvplaylistTitle);
-            tvDesc = itemView.findViewById(R.id.tvplaylist);
+            image = itemView.findViewById(R.id.imgPlayList);
         }
     }
 }

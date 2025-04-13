@@ -1,24 +1,25 @@
 package vn.edu.tlu.cse.ntl.soundplay.data.model;
 
-
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-
-@Entity(tableName = "play_list")
-public class Playlist {
+@Entity(tableName = "musics")
+public class Music {
     @SerializedName("id")
     private String id;
 
     private String title;
     private String thumbnail;
     private String url;
+    private String artist;
 
-    public Playlist(String title, String thumbnail, String url) {
+    public Music(String title, String thumbnail, String url, String artist) {
         this.title = title;
         this.thumbnail = thumbnail;
         this.url = url;
+        this.artist = artist;
     }
 
     public String getId() {
@@ -51,5 +52,13 @@ public class Playlist {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
     }
 }

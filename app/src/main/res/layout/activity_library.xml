@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:padding="12dp"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="15dp">
         <ImageView
             android:id="@+id/imgNote"
             android:layout_width="44dp"
@@ -128,7 +128,7 @@
 
     <!-- Danh sách phát -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvPlaylist"
+        android:id="@+id/rvmusic"
         android:layout_width="match_parent"
         android:layout_height="377dp"
         android:layout_marginBottom="5dp"
