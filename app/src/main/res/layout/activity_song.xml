@@ -127,7 +127,7 @@
             android:id="@+id/btnBackPre"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_blackPre"
+            android:src="@drawable/backpre"
             android:layout_marginEnd="24dp" />
 
         <ImageView
@@ -140,7 +140,7 @@
             android:id="@+id/btnNextPre"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_nextPre"
+            android:src="@drawable/nextpre"
             android:layout_marginEnd="24dp" />
 
 

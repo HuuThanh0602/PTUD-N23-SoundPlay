@@ -95,14 +95,15 @@
             android:padding="16dp">
 
             <!-- Nghe lại -->
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nghe lại"
+                android:layout_marginBottom="8dp"
+                android:text="Top 100 bài hát"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerRecent"
