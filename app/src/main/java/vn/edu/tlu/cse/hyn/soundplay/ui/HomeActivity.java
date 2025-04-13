@@ -56,6 +56,14 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
             startActivity(intent);
         });
+
+        LinearLayout libraryTab = findViewById(R.id.library);
+
+        libraryTab.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, FavouriteActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     private void getTop100Music() {
