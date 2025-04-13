@@ -13,13 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import vn.edu.tlu.cse.hyn.soundplay.R;
-import vn.edu.tlu.cse.hyn.soundplay.data.model.MusicItem;
+import vn.edu.tlu.cse.hyn.soundplay.data.model.Music;
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHolder> {
 
-    private List<MusicItem> list;
+    private List<Music> list;
 
-    public MusicAdapter(List<MusicItem> list) {
+    public MusicAdapter(List<Music> list) {
         this.list = list;
     }
 
@@ -32,9 +32,9 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MusicViewHolder holder, int position) {
-        MusicItem item = list.get(position);
+        Music item = list.get(position);
         holder.txtTitle.setText(item.getTitle());
-        holder.imgCover.setImageResource(item.getImageRes());
+        //holder.imgCover.setImageResource(item.getUrl());
     }
 
     @Override

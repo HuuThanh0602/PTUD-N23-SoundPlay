@@ -8,16 +8,19 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 import vn.edu.tlu.cse.hyn.soundplay.R;
-import vn.edu.tlu.cse.hyn.soundplay.data.model.MusicItem;
+import vn.edu.tlu.cse.hyn.soundplay.data.model.Music;
+import vn.edu.tlu.cse.hyn.soundplay.data.model.PlayList;
 
 public class MixAdapter extends RecyclerView.Adapter<MixAdapter.MixViewHolder> {
 
-    private List<MusicItem> mixList;
+    private List<PlayList> mixList;
 
-    public MixAdapter(List<MusicItem> mixList) {
+    public MixAdapter(List<PlayList> mixList) {
         this.mixList = mixList;
     }
 
@@ -31,9 +34,12 @@ public class MixAdapter extends RecyclerView.Adapter<MixAdapter.MixViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MixViewHolder holder, int position) {
-        MusicItem item = mixList.get(position);
-        holder.imgCover.setImageResource(item.getImageRes());
+        PlayList item = mixList.get(position);
+        Glide.with(holder.itemView.getContext())
+                .load(item.getThumbnail())
+                .into(holder.imgCover);
     }
+
 
     @Override
     public int getItemCount() {

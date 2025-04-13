@@ -6,87 +6,81 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
-import android.view.View;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import vn.edu.tlu.cse.hyn.soundplay.R;
 import vn.edu.tlu.cse.hyn.soundplay.adapter.MixAdapter;
-import vn.edu.tlu.cse.hyn.soundplay.adapter.MusicAdapter;
-import vn.edu.tlu.cse.hyn.soundplay.adapter.RecentAdapter;
-import vn.edu.tlu.cse.hyn.soundplay.data.model.MusicItem;
+import vn.edu.tlu.cse.hyn.soundplay.data.model.PlayList;
+import vn.edu.tlu.cse.hyn.soundplay.data.repository.MusicRepository;
 
-public class MusicHomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
     RecyclerView recyclerRecent, recyclerForYou, recyclerRecentPlays;
     LinearLayout navProfile;
-    CircleImageView avatarHome;  // ✅ Đúng kiểu bo tròn
+    CircleImageView avatarHome;
     TextView txtUserName;
+    private MusicRepository musicRepository;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        musicRepository = new MusicRepository();
 
         // Ánh xạ view
         recyclerRecent = findViewById(R.id.recyclerRecent);
         recyclerForYou = findViewById(R.id.recyclerForYou);
         recyclerRecentPlays = findViewById(R.id.recyclerRecentPlays);
         navProfile = findViewById(R.id.navProfile);
-        avatarHome = findViewById(R.id.avatarHome);  // ✅ Sử dụng CircleImageView
+        avatarHome = findViewById(R.id.avatarHome);
         txtUserName = findViewById(R.id.txtUserName);
 
-        // Load dữ liệu SharedPreferences lần đầu
         loadUserProfile();
 
-        // Danh sách mẫu
-        List<MusicItem> ngheLaiList = new ArrayList<>();
-        ngheLaiList.add(new MusicItem("Nhạc buồn", R.drawable.nhacbuon));
-        ngheLaiList.add(new MusicItem("SAY HI", R.drawable.sayhi));
-        ngheLaiList.add(new MusicItem("Tuyển tập của HIEUTHUHAI", R.drawable.hieuthuhai));
-        ngheLaiList.add(new MusicItem("V- POP không thể thiếu", R.drawable.vpop));
-        ngheLaiList.add(new MusicItem("Âm hưởng dân gian", R.drawable.dangian));
-        ngheLaiList.add(new MusicItem("LOFI", R.drawable.lofi));
-
-        List<MusicItem> danhChoBanList = new ArrayList<>();
-        danhChoBanList.add(new MusicItem("Pop Mix", R.drawable.popmix));
-        danhChoBanList.add(new MusicItem("Chill Mix", R.drawable.chillmix));
-        danhChoBanList.add(new MusicItem("K- Pop Mix", R.drawable.kpopmix));
-
-        List<MusicItem> ganDayList = new ArrayList<>();
-        ganDayList.add(new MusicItem("", R.drawable.img_recent1));
-        ganDayList.add(new MusicItem("", R.drawable.img_recent2));
-        ganDayList.add(new MusicItem("", R.drawable.img_recent3));
-
-        recyclerRecent.setLayoutManager(new GridLayoutManager(this, 2));
-        recyclerRecent.setAdapter(new MusicAdapter(ngheLaiList));
-
+        // Cài layout và đổ dữ liệu cho mục "Dành cho bạn"
         recyclerForYou.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerForYou.setAdapter(new MixAdapter(danhChoBanList));
-
-        recyclerRecentPlays.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerRecentPlays.setAdapter(new RecentAdapter(ganDayList));
+        getTop100Music(); // Gọi API để lấy dữ liệu top 100
 
         // Chuyển sang Hồ sơ
         navProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(MusicHomeActivity.this, ProfileActivity.class);
+            Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
             startActivity(intent);
+        });
+    }
+
+    private void getTop100Music() {
+        musicRepository.getTop100(new MusicRepository.Top100Callback() {
+            @Override
+            public void onSuccess(List<PlayList> top100List) {
+                // In log kiểm tra dữ liệu
+                for (PlayList playList : top100List) {
+                    Log.d("Top100", "ID: " + playList.getId() + ", Tên: " + playList.getTitle() + ", Ảnh: " + playList.getThumbnail());
+                }
+                // Đổ dữ liệu vào RecyclerView
+                MixAdapter mixAdapter = new MixAdapter(top100List);
+                recyclerForYou.setAdapter(mixAdapter);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("Top100", "Lỗi: " + errorMessage);
+            }
         });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Mỗi khi quay lại, cập nhật lại avatar và tên
         loadUserProfile();
     }
 
@@ -106,7 +100,7 @@ public class MusicHomeActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            avatarHome.setImageResource(R.drawable.ic_avatar); // ảnh mặc định nếu chưa có
+            avatarHome.setImageResource(R.drawable.ic_avatar);
         }
     }
 }

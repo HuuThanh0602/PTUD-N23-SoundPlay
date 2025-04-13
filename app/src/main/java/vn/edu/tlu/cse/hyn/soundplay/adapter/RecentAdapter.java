@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import vn.edu.tlu.cse.hyn.soundplay.R;
-import vn.edu.tlu.cse.hyn.soundplay.data.model.MusicItem;
+import vn.edu.tlu.cse.hyn.soundplay.data.model.Music;
 
 public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.RecentViewHolder> {
 
-    private List<MusicItem> recentList;
+    private List<Music> recentList;
 
-    public RecentAdapter(List<MusicItem> recentList) {
+    public RecentAdapter(List<Music> recentList) {
         this.recentList = recentList;
     }
 
@@ -31,8 +31,8 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.RecentView
 
     @Override
     public void onBindViewHolder(@NonNull RecentViewHolder holder, int position) {
-        MusicItem item = recentList.get(position);
-        holder.imgCover.setImageResource(item.getImageRes());
+        Music item = recentList.get(position);
+        //holder.imgCover.setImageResource(item.getImageRes());
     }
 
     @Override
