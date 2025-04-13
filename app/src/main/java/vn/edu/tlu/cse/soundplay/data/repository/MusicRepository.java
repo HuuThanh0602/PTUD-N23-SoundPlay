@@ -16,6 +16,7 @@ import retrofit2.Response;
 import vn.edu.tlu.cse.soundplay.data.api.ApiClient;
 import vn.edu.tlu.cse.soundplay.data.api.ApiService;
 import vn.edu.tlu.cse.soundplay.data.model.Music;
+import vn.edu.tlu.cse.soundplay.data.model.PlayList;
 
 public class MusicRepository {
 
@@ -32,7 +33,7 @@ public class MusicRepository {
         void onSearchError(String error);
     }
     public interface Top100Callback {
-        void onSuccess(List<Music> top100List);
+        void onSuccess(List<PlayList> top100List);
         void onError(String errorMessage);
     }
     public void search(String keyword, final SearchCallback callback) {
@@ -70,8 +71,8 @@ public class MusicRepository {
                     Object dataObj = response.body().get("data");
 
                     String jsonArray = gson.toJson(dataObj);
-                    Type listType = new TypeToken<List<Music>>() {}.getType();
-                    List<Music> top100List = gson.fromJson(jsonArray, listType);
+                    Type listType = new TypeToken<List<PlayList>>() {}.getType();
+                    List<PlayList> top100List = gson.fromJson(jsonArray, listType);
 
                     callback.onSuccess(top100List);
                 } else {
