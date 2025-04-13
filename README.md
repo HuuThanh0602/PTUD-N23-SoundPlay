@@ -34,7 +34,7 @@ Sound Play là ứng dụng phát nhạc trực tuyến được thiết kế ch
 
 ## 🚀 Hướng Dẫn Cài Đặt
 - Bước 1: Clone dự án về máy:
- <pre> ```bash git clone https://github.com/HuuThanh0602/PTUD-N23-SoundPlay.git ``` </pre>
+ ```bash git clone https://github.com/HuuThanh0602/PTUD-N23-SoundPlay.git ``` 
 
 - Bước 2: Mở project bằng Android Studio
 
