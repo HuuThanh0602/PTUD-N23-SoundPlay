@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,13 +17,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Tiêu đề -->
-
-    <!-- Ảnh Playlist -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
         android:text="DANH SÁCH BÀI HÁT"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
@@ -33,20 +28,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintHorizontal_bias="0.5" />
 
-    <!-- Tên Playlist -->
+    <!-- Ảnh Playlist -->
     <ImageView
         android:id="@+id/imgPlaylist"
         android:layout_width="320dp"
-        android:layout_height="277dp"
-        android:layout_marginTop="24dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="16dp"
         android:scaleType="centerCrop"
         android:src="@drawable/pictr_1"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Tên Playlist -->
     <TextView
         android:id="@+id/tvPlaylistName"
         android:layout_width="wrap_content"
@@ -79,8 +77,116 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="12dp"
+        android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/tvPlaylistDesc"
+        app:layout_constraintBottom_toTopOf="@id/custom_navbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Custom Bottom Navigation -->
+    <LinearLayout
+        android:id="@+id/custom_navbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#40444C"
+        android:paddingTop="12dp"
+        android:paddingBottom="8dp"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Trang chủ -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/home"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/home"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trang chủ"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <!-- Tìm kiếm -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/search"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/search"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tìm kiếm"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <!-- Thư viện -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/library"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/library"
+                android:tint="#FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thư viện"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <!-- Hồ sơ -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/profile"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/profile"
+                android:tint="#FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hồ sơ"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
