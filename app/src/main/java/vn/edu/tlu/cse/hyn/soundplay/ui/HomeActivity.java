@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,7 +51,7 @@ public class HomeActivity extends AppCompatActivity {
         loadUserProfile();
 
         // Thiết lập layout cho từng RecyclerView
-        recyclerRecent.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerRecent.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerForYou.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerRecentPlays.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         getTop100Music();
@@ -83,7 +84,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 // Đổ dữ liệu vào RecyclerView
                 MusicAdapter musicAdapter = new MusicAdapter(top100List);
-                recyclerForYou.setAdapter(musicAdapter);
+                recyclerRecent.setAdapter(musicAdapter);
             }
 
             @Override

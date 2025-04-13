@@ -38,7 +38,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
     public void onBindViewHolder(@NonNull MusicViewHolder holder, int position) {
         PlayList item = list.get(position);
         holder.txtTitle.setText(item.getTitle());
-        //holder.imgCover.setImageResource(item.getUrl());
         Glide.with(holder.itemView.getContext())
                 .load(item.getThumbnail()) // Load ảnh từ URL
                 .placeholder(R.drawable.ic_music)
