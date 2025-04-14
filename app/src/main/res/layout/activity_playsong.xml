@@ -148,33 +148,40 @@
     </LinearLayout>
 
     <!-- Phần lời bài hát -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LYRICS"
-        android:textColor="#5DD9E6"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="153dp"
-        android:layout_marginTop="16dp"
-        android:fillViewport="true"
-        android:background="@drawable/bg_lyrics"
-        android:padding="16dp"
-        android:overScrollMode="ifContentScrolls"
-        android:scrollbars="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/txtLyrics"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thật ra anh yêu rồi\n1000 ánh mắt trông đợi\nTình cờ mình gặp gỡ lúc ta chào nhau\nThật lòng này là đã chết trước em từ lâu\nThật ra anh yêu rồi\n1000 ánh mắt trông đợi\nTìm lại được cảm giác lãng quên từ lâu\nVà giờ thì chỉ mỗi em là đậm sâu"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:text="LYRICS"
+            android:textColor="#5DD9E6"
             android:textStyle="bold"
-            android:lineSpacingExtra="4dp" />
-    </ScrollView>
+            android:layout_marginBottom="8dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:background="@drawable/bg_lyrics"
+            android:padding="16dp"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollbars="vertical">
+
+            <TextView
+                android:id="@+id/txtLyrics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thật ra anh yêu rồi\n1000 ánh mắt trông đợi\nTình cờ mình gặp gỡ lúc ta chào nhau\nThật lòng này là đã chết trước em từ lâu\nThật ra anh yêu rồi\n1000 ánh mắt trông đợi\nTìm lại được cảm giác lãng quên từ lâu\nVà giờ thì chỉ mỗi em là đậm sâu"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:lineSpacingExtra="4dp" />
+        </ScrollView>
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package vn.edu.tlu.cse.ntl.soundplay.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,12 +28,21 @@ public class PlaylistDetailActivity extends AppCompatActivity {
     private MusicRepository musicRepository;
     private TextView tvPlaylistName;
     private ImageView imgPlaylist;
+    private ImageView homeIcon,libraryIcon, profileIcon, searchIcon;
+
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_detail);
+
+
+        searchIcon = findViewById(R.id.search);
+        homeIcon = findViewById(R.id.home);
+        profileIcon = findViewById(R.id.profile);
+        libraryIcon = findViewById(R.id.library);
+
 
 
         // Khởi tạo RecyclerView và Adapter
@@ -70,6 +80,33 @@ public class PlaylistDetailActivity extends AppCompatActivity {
         } else {
             Log.e("PlaylistDetail", "Không có playlistId truyền vào Intent");
         }
+
+
+
+        // Tìm kiếm
+        searchIcon.setOnClickListener(v -> {
+            startActivity(new Intent(PlaylistDetailActivity.this, SearchActivity.class));
+            finish();
+        });
+
+        // Trang chủ
+        homeIcon.setOnClickListener(v -> {
+            startActivity(new Intent(PlaylistDetailActivity.this, HomeActivity.class));
+            finish();
+        });
+
+        // Hồ sơ
+        profileIcon.setOnClickListener(v -> {
+            startActivity(new Intent(PlaylistDetailActivity.this, ProfileActivity.class));
+            finish();
+        });
+
+        // Hồ sơ
+        libraryIcon.setOnClickListener(v -> {
+            startActivity(new Intent(PlaylistDetailActivity.this, LibraryActivity.class));
+            finish();
+        });
+
     }
 
     // Hàm tải bài hát trong playlist
