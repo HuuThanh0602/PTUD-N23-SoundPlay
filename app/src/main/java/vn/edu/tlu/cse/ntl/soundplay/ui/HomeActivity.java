@@ -20,6 +20,8 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import vn.edu.tlu.cse.ntl.soundplay.R;
 import vn.edu.tlu.cse.ntl.soundplay.adapter.LastestAdapter;
+import vn.edu.tlu.cse.ntl.soundplay.adapter.MusicAdapter;
+import vn.edu.tlu.cse.ntl.soundplay.adapter.RecentAdapter;
 import vn.edu.tlu.cse.ntl.soundplay.adapter.YouAdapter;
 import vn.edu.tlu.cse.ntl.soundplay.data.model.Music;
 import vn.edu.tlu.cse.ntl.soundplay.data.model.Playlist;
@@ -40,7 +42,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         musicRepository = new MusicRepository();
 
-        // Initialize views
+
         searchIcon = findViewById(R.id.search);
         libraryIcon = findViewById(R.id.library);
         profileIcon = findViewById(R.id.profile);
@@ -58,7 +60,10 @@ public class HomeActivity extends AppCompatActivity {
         recyclerLastest.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.HORIZONTAL, false));
         getNewReleaseMusic();
 
-        // Navigation click listeners
+        recyclerRecentPlays.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        getRecentPlays();
+
+
         profileIcon.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
             startActivity(intent);
@@ -110,6 +115,26 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    private void getRecentPlays() {
+        musicRepository.getRecentPlays(new MusicRepository.RecentCallback() {
+            @Override
+            public void onSuccess(List<Music> musicList) {
+                MusicAdapter adapter = new MusicAdapter(musicList);
+                recyclerRecentPlays.setAdapter(adapter);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("RecentPlays", "Lỗi: " + errorMessage);
+            }
+        });
+    }
+
+
+
+
 
     @Override
     protected void onResume() {

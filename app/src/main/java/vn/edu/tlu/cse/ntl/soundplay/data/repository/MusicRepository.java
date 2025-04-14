@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -116,5 +117,19 @@ public class MusicRepository {
             }
         });
     }
+
+
+    public void getRecentPlays(RecentCallback callback) {
+        List<Music> recentList = new ArrayList<>();
+        // Giả lập: lấy 3 bài gần đây
+        recentList.add(new Music("Bắc Bling", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/e/3/3/9/e3399633d5289da5cb7c4292a41f0f67.jpg", "https://th.bing.com/th/id/OIP.4akau9Zyzq-ioaE0S_YVrwHaHa?rs=1&pid=ImgDetMain","Nhiều nghệ sĩ"));
+        callback.onSuccess(recentList);
+    }
+
+    public interface RecentCallback {
+        void onSuccess(List<Music> recentList);
+        void onError(String errorMessage);
+    }
+
 
 }
