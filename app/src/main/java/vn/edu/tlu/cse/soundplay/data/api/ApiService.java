@@ -10,7 +10,7 @@ public interface ApiService {
     @GET("song")
     Call<Object> getSong();
     @GET("playlist")
-    Call<Object> getDetailPlaylist();
+    Call<Map<String, Object>> getDetailPlaylist(@Query("id") String id);
     @GET("home")
     Call<Object> getHome();
     @GET("top100")
@@ -19,7 +19,6 @@ public interface ApiService {
     Call<Map<String, Object>> search(@Query("keyword") String keyword);
     @GET("chart")
     Call<Object> getChartHome();
-
     //bài hát mới nhất
     @GET("new-release")
     Call<Map<String, Object>> getNewReleaseChart();

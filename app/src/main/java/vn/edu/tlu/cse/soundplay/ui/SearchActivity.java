@@ -22,7 +22,8 @@ public class SearchActivity extends AppCompatActivity {
 
         String keyword = "em cua ngay hom qua";
         //searchMusic(keyword);
-        getNewReleaseMusic();
+        playList("ZWZB969E");
+        //getNewReleaseMusic();
         //getTop100Music();
     }
 
@@ -64,6 +65,22 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List<Music> newReleases) {
                 for (Music music : newReleases) {
+                    Log.d("NewRelease", "ID: " + music.getId() + ", Tên bài hát: " + music.getTitle() + ", Ảnh: " + music.getThumbnail());
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("NewRelease", "Lỗi: " + errorMessage);
+            }
+        });
+    }
+
+    private void playList(String id) {
+        musicRepository.getPlayList(id,new MusicRepository.PlayListCallback() {
+            @Override
+            public void onSuccess(List<Music> playList) {
+                for (Music music : playList) {
                     Log.d("NewRelease", "ID: " + music.getId() + ", Tên bài hát: " + music.getTitle() + ", Ảnh: " + music.getThumbnail());
                 }
             }

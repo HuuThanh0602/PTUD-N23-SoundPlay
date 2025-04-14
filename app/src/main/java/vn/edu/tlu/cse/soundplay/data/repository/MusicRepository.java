@@ -42,6 +42,10 @@ public class MusicRepository {
         void onSuccess(List<Music> newReleases);
         void onError(String errorMessage);
     }
+    public interface PlayListCallback {
+        void onSuccess(List<Music> playList);
+        void onError(String errorMessage);
+    }
 
     public void search(String keyword, final SearchCallback callback) {
         Call<Map<String, Object>> call = apiService.search(keyword);
@@ -108,6 +112,31 @@ public class MusicRepository {
                 }
             }
 
+            @Override
+            public void onFailure(@NonNull Call<Map<String, Object>> call, @NonNull Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+
+
+    public void getPlayList(String id,final PlayListCallback callback) {
+        Call<Map<String, Object>> call = apiService.getDetailPlaylist(id);
+
+        call.enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(@NonNull Call<Map<String, Object>> call, @NonNull Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Object dataObj = response.body().get("data");
+                    String jsonArray = gson.toJson(dataObj);
+                    Type listType = new TypeToken<List<Music>>() {}.getType();
+                    List<Music> playList = gson.fromJson(jsonArray, listType);
+                    callback.onSuccess(playList);
+                } else {
+                    callback.onError("Lỗi: Dữ liệu trả về không hợp lệ.");
+                }
+            }
             @Override
             public void onFailure(@NonNull Call<Map<String, Object>> call, @NonNull Throwable t) {
                 callback.onError(t.getMessage());
