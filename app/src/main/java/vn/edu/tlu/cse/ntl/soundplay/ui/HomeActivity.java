@@ -21,7 +21,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import vn.edu.tlu.cse.ntl.soundplay.R;
 import vn.edu.tlu.cse.ntl.soundplay.adapter.LastestAdapter;
 import vn.edu.tlu.cse.ntl.soundplay.adapter.MusicAdapter;
-import vn.edu.tlu.cse.ntl.soundplay.adapter.RecentAdapter;
 import vn.edu.tlu.cse.ntl.soundplay.adapter.YouAdapter;
 import vn.edu.tlu.cse.ntl.soundplay.data.model.Music;
 import vn.edu.tlu.cse.ntl.soundplay.data.model.Playlist;
@@ -60,7 +59,7 @@ public class HomeActivity extends AppCompatActivity {
         recyclerLastest.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.HORIZONTAL, false));
         getNewReleaseMusic();
 
-        recyclerRecentPlays.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerRecentPlays.setLayoutManager(new LinearLayoutManager(this));
         getRecentPlays();
 
 

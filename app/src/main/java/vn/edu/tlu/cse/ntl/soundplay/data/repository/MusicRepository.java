@@ -123,6 +123,10 @@ public class MusicRepository {
         List<Music> recentList = new ArrayList<>();
         // Giả lập: lấy 3 bài gần đây
         recentList.add(new Music("Bắc Bling", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/e/3/3/9/e3399633d5289da5cb7c4292a41f0f67.jpg", "https://th.bing.com/th/id/OIP.4akau9Zyzq-ioaE0S_YVrwHaHa?rs=1&pid=ImgDetMain","Nhiều nghệ sĩ"));
+        recentList.add(new Music("1 Bầu Trời 2 Khung Cửa Sổ", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/6/e/a/b6ea425010047f6d3f9ca107cb34b12e.jpg", "https://th.bing.com/th/id/OIP.4akau9Zyzq-ioaE0S_YVrwHaHa?rs=1&pid=ImgDetMain","Long Bling"));
+        recentList.add(new Music("Như Ngọn Thủy Triều ", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/f/0/1/1/f01149f7efa5125f3120ace2d68c3140.jpg", "https://th.bing.com/th/id/OIP.4akau9Zyzq-ioaE0S_YVrwHaHa?rs=1&pid=ImgDetMain","DICKSON"));
+        recentList.add(new Music("Thủy Triều", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/8/4/7/4/8474eb9fd1a3aa78b974b4c104ff45fc.jpg", "https://th.bing.com/th/id/OIP.4akau9Zyzq-ioaE0S_YVrwHaHa?rs=1&pid=ImgDetMain","Quang Hùng MasterD"));
+
         callback.onSuccess(recentList);
     }
 

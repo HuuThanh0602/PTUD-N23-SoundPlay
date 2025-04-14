@@ -43,7 +43,7 @@ public class LibraryActivity extends AppCompatActivity {
 
         musicRepository = new MusicRepository();
 
-        recyclerViewMusic.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewMusic.setLayoutManager(new LinearLayoutManager(this));
         getRecentPlays();
 
 
