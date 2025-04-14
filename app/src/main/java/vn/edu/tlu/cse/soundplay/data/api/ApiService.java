@@ -29,7 +29,7 @@ public interface ApiService {
     @GET("artist-song")
     Call<Object> getListArtistSong(@Query("id") String id);
     @GET("lyric")
-    Call<Object> getLyric(@Query("id") String id);
+    Call<Map<String, Object>> getLyric(@Query("id") String id);
 
     @GET("mv")
     Call<Object> getListMV();

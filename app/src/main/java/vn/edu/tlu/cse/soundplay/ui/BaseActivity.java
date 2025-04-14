@@ -6,12 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -19,130 +21,179 @@ import com.bumptech.glide.Glide;
 import vn.edu.tlu.cse.soundplay.R;
 import vn.edu.tlu.cse.soundplay.service.MusicService;
 
-public class BaseActivity extends AppCompatActivity {
-    LinearLayout miniPlayer;
-    TextView txtTitle;
-    ImageView btnPlayPause, imgCover;
-    private BroadcastReceiver uiUpdateReceiver;
+public abstract class BaseActivity extends AppCompatActivity {
+
+    protected LinearLayout miniPlayer;
+    protected ImageView imgCover, btnPlayPause, btnPrev, btnNext;
+    protected TextView txtTitle, txtArtist;
+    protected BroadcastReceiver miniPlayerReceiver;
+    protected boolean isPlaying = false;
+    protected String currentSongUrl;
+    protected String currentSongId;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    protected void initMiniPlayer() {
+        // Khởi tạo các view của mini player
+        miniPlayer = findViewById(R.id.mini_player);
+        imgCover = findViewById(R.id.img_cover);
+        txtTitle = findViewById(R.id.txt_title);
+        txtArtist = findViewById(R.id.txt_artist);
+        btnPlayPause = findViewById(R.id.btn_play_pause);
+        btnPrev = findViewById(R.id.btn_prev);
+        btnNext = findViewById(R.id.btn_next);
+
+        if (miniPlayer == null) {
+            Log.w("BaseActivity", "Mini player layout not found");
+            return; // Nếu không có mini player trong layout, bỏ qua
+        }
+
+        // Ẩn mini player ngay lập tức
+        miniPlayer.setVisibility(View.GONE);
+        Log.d("BaseActivity", "Mini player initialized and hidden");
+
+        // Sự kiện click cho mini player
+        btnPlayPause.setOnClickListener(v -> togglePlayPause());
+        btnPrev.setOnClickListener(v -> controlMusic(MusicService.ACTION_PREV));
+        btnNext.setOnClickListener(v -> controlMusic(MusicService.ACTION_NEXT));
+        miniPlayer.setOnClickListener(v -> {
+            if (currentSongUrl != null && !currentSongUrl.isEmpty()) {
+                Intent intent = new Intent(BaseActivity.this, PlaySongActivity.class);
+                intent.putExtra("MUSIC_TITLE", txtTitle.getText().toString());
+                intent.putExtra("MUSIC_THUMBNAIL", imgCover.getTag() != null ? imgCover.getTag().toString() : "");
+                intent.putExtra("MUSIC_URL", currentSongUrl);
+                intent.putExtra("MUSIC_ID", currentSongId);
+                intent.putExtra("MUSIC_ARTIST", txtArtist.getText().toString());
+                Log.d("BaseActivity", "Mini player clicked, songId: " + currentSongId);
+                startActivity(intent);
+            } else {
+                Log.w("BaseActivity", "Cannot start PlaySongActivity: Invalid song data");
+            }
+        });
+
+        // Đăng ký BroadcastReceiver
+        registerMiniPlayerReceiver();
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        setupMiniPlayer();
-        registerReceiver();
-        // Kiểm tra trạng thái MusicService khi activity khởi động
-        Intent checkIntent = new Intent(this, MusicService.class);
-        checkIntent.setAction("CHECK_STATE");
-        startService(checkIntent);
-        Log.d("BaseActivity", "Sent CHECK_STATE to MusicService");
+        // Trì hoãn gửi CHECK_STATE để đảm bảo view được khởi tạo
+        if (miniPlayer != null) {
+            miniPlayer.post(() -> {
+                Intent checkIntent = new Intent(this, MusicService.class);
+                checkIntent.setAction("CHECK_STATE");
+                startService(checkIntent);
+                Log.d("BaseActivity", "onStart: Sent CHECK_STATE to MusicService");
+            });
+        }
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        if (uiUpdateReceiver != null) {
+    protected void onDestroy() {
+        super.onDestroy();
+        if (miniPlayerReceiver != null) {
             try {
-                unregisterReceiver(uiUpdateReceiver);
-                Log.d("BaseActivity", "BroadcastReceiver unregistered");
+                unregisterReceiver(miniPlayerReceiver);
+                Log.d("BaseActivity", "MiniPlayerReceiver unregistered");
             } catch (Exception e) {
                 Log.e("BaseActivity", "Error unregistering receiver: " + e.getMessage());
             }
         }
     }
 
-    protected void setupMiniPlayer() {
-        miniPlayer = findViewById(R.id.mini_player);
-        txtTitle = findViewById(R.id.txt_title);
-        btnPlayPause = findViewById(R.id.btn_play_pause);
-        imgCover = findViewById(R.id.img_cover);
-
-        if (miniPlayer == null || txtTitle == null || btnPlayPause == null || imgCover == null) {
-            Log.w("BaseActivity", "Mini player views not found");
-            return;
+    protected void togglePlayPause() {
+        Intent serviceIntent = new Intent(this, MusicService.class);
+        if (isPlaying) {
+            serviceIntent.setAction(MusicService.ACTION_PAUSE);
+            Log.d("BaseActivity", "Sending ACTION_PAUSE");
+        } else {
+            serviceIntent.setAction(MusicService.ACTION_RESUME);
+            Log.d("BaseActivity", "Sending ACTION_RESUME");
         }
+        startService(serviceIntent);
+    }
 
-        // Khi mini player được nhấn, chuyển đến PlaySongActivity
-        miniPlayer.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PlaySongActivity.class);
-            intent.putExtra("MUSIC_TITLE", txtTitle.getText().toString());
-            intent.putExtra("MUSIC_THUMBNAIL", imgCover.getTag() != null ? imgCover.getTag().toString() : "");
-            intent.putExtra("MUSIC_URL", "");
-            startActivity(intent);
-            Log.d("BaseActivity", "Mini player clicked, starting PlaySongActivity");
-        });
-
-        // Khi nút play/pause được nhấn, gửi action tới MusicService
-        btnPlayPause.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MusicService.class);
-            String currentAction = (String) btnPlayPause.getTag();
-            if ("playing".equals(currentAction)) {
-                intent.setAction(MusicService.ACTION_PAUSE);
-            } else {
-                intent.setAction(MusicService.ACTION_RESUME);
-            }
-            startService(intent);
-            Log.d("BaseActivity", "Play/Pause button clicked, action: " + intent.getAction());
-        });
+    protected void controlMusic(String action) {
+        Intent serviceIntent = new Intent(this, MusicService.class);
+        serviceIntent.setAction(action);
+        startService(serviceIntent);
+        Log.d("BaseActivity", "Control music: " + action);
     }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    private void registerReceiver() {
-        uiUpdateReceiver = new BroadcastReceiver() {
-
+    protected void registerMiniPlayerReceiver() {
+        IntentFilter filter = new IntentFilter("UPDATE_UI");
+        miniPlayerReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d("BaseActivity", "Received broadcast: " + intent);
+                Log.d("BaseActivity", "MiniPlayerReceiver received: " + intent);
                 String songTitle = intent.getStringExtra("title");
-                String thumbnail = intent.getStringExtra("thumbnail");
+                String songArtist = intent.getStringExtra("artist");
+                String songThumbnail = intent.getStringExtra("thumbnail");
+                String songId = intent.getStringExtra("songId");
+                String songUrl = intent.getStringExtra("url");
                 String action = intent.getStringExtra("action");
 
-                boolean isValidTitle = songTitle != null && !songTitle.isEmpty() && !songTitle.contains("Lỗi");
-                boolean isValidThumbnail = thumbnail != null && !thumbnail.isEmpty();
+                Log.d("BaseActivity", "Received songId: " + songId); // Thêm log
 
-                if (isValidTitle) {
+                // Kiểm tra dữ liệu hợp lệ trước khi hiển thị
+                if (songTitle != null && !songTitle.isEmpty() && !songTitle.contains("Lỗi") &&
+                        songUrl != null && !songUrl.isEmpty()) {
                     txtTitle.setText(songTitle);
-                    Log.d("BaseActivity", "Updated title: " + songTitle);
+                    miniPlayer.setVisibility(View.VISIBLE);
+                    Log.d("mini_player", "Mini player shown with title: " + songTitle);
                 } else {
-                    Log.w("BaseActivity", "Invalid title received: " + songTitle);
+                    miniPlayer.setVisibility(View.GONE);
+                    Log.d("mini_player", "Mini player hidden due to invalid data");
+                    return;
                 }
 
-                if (isValidThumbnail) {
+                // Cập nhật nghệ sĩ
+                if (songArtist != null && !songArtist.isEmpty()) {
+                    txtArtist.setText(songArtist);
+                } else {
+                    txtArtist.setText("Unknown Artist");
+                }
+
+                // Cập nhật ảnh bìa
+                if (songThumbnail != null && !songThumbnail.isEmpty()) {
                     Glide.with(BaseActivity.this)
-                            .load(thumbnail)
+                            .load(songThumbnail)
                             .placeholder(R.drawable.ic_music)
                             .error(R.drawable.ic_music)
                             .into(imgCover);
-                    imgCover.setTag(thumbnail);
-                    Log.d("BaseActivity", "Updated thumbnail: " + thumbnail);
+                    imgCover.setTag(songThumbnail);
                 } else {
                     imgCover.setImageResource(R.drawable.ic_music);
-                    imgCover.setTag(null);
                 }
 
-                if ((MusicService.ACTION_PLAY.equals(action) || MusicService.ACTION_RESUME.equals(action)) && isValidTitle && isValidThumbnail) {
+                // Lưu thông tin bài hát
+                currentSongUrl = songUrl;
+                currentSongId = songId;
+                Log.d("BaseActivity", "Updated currentSongId: " + currentSongId);
+
+                // Cập nhật trạng thái play/pause
+                if (MusicService.ACTION_PLAY.equals(action) || MusicService.ACTION_RESUME.equals(action)) {
                     btnPlayPause.setImageResource(R.drawable.ic_pause);
-                    btnPlayPause.setTag("playing");
-                    miniPlayer.setVisibility(View.VISIBLE);
+                    isPlaying = true;
                     Log.d("BaseActivity", "Mini player updated to PLAY/RESUME state");
-                } else if (MusicService.ACTION_PAUSE.equals(action) && isValidTitle && isValidThumbnail) {
+                } else if (MusicService.ACTION_PAUSE.equals(action)) {
                     btnPlayPause.setImageResource(R.drawable.ic_play);
-                    btnPlayPause.setTag("paused");
-                    miniPlayer.setVisibility(View.VISIBLE);
+                    isPlaying = false;
                     Log.d("BaseActivity", "Mini player updated to PAUSE state");
-                } else {
-                    miniPlayer.setVisibility(View.GONE);
-                    Log.d("BaseActivity", "Mini player hidden due to invalid data or STOP action");
                 }
             }
-
         };
 
-        IntentFilter filter = new IntentFilter("UPDATE_UI");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            registerReceiver(uiUpdateReceiver, filter, Context.RECEIVER_EXPORTED);
+            registerReceiver(miniPlayerReceiver, filter, Context.RECEIVER_EXPORTED);
         } else {
-            registerReceiver(uiUpdateReceiver, filter);
+            registerReceiver(miniPlayerReceiver, filter);
         }
-        Log.d("BaseActivity", "BroadcastReceiver registered");
+        Log.d("BaseActivity", "MiniPlayerReceiver registered");
     }
 }

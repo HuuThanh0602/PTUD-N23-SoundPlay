@@ -36,58 +36,36 @@ public class MusicService extends Service {
 
     private static final String CHANNEL_ID = "MusicServiceChannel";
     private static final int NOTIFICATION_ID = 1;
+    private static final String TAG = "MusicService";
 
     private MediaPlayer mediaPlayer;
     private String currentSongUrl;
     private String currentSongTitle;
     private String currentSongThumbnail;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private String currentSongId;
+    private String currentSongArtist;
     private boolean isPlaying = false;
     private List<String> songUrls = new ArrayList<>();
     private List<String> songTitles = new ArrayList<>();
     private List<String> songThumbnails = new ArrayList<>();
+    private List<String> songIds = new ArrayList<>();
+    private List<String> songArtists = new ArrayList<>();
     private int currentSongIndex = 0;
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
-        Log.d("MusicService", "onCreate called");
+        Log.d(TAG, "onCreate called");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("MusicService", "onStartCommand: " + intent);
+        Log.d(TAG, "onStartCommand: " + intent);
         String action = intent != null ? intent.getAction() : null;
 
-        // Lấy danh sách bài hát, tiêu đề, và ảnh bìa
-        ArrayList<String> receivedSongUrls = intent != null ? intent.getStringArrayListExtra("songUrls") : null;
-        ArrayList<String> receivedSongTitles = intent != null ? intent.getStringArrayListExtra("songTitles") : null;
-        ArrayList<String> receivedSongThumbnails = intent != null ? intent.getStringArrayListExtra("songThumbnails") : null;
-        if (receivedSongUrls != null && !receivedSongUrls.isEmpty()) {
-            songUrls.clear();
-            songUrls.addAll(receivedSongUrls);
-            if (receivedSongTitles != null && receivedSongTitles.size() == receivedSongUrls.size()) {
-                songTitles.clear();
-                songTitles.addAll(receivedSongTitles);
-            } else {
-                songTitles.clear();
-                for (int i = 0; i < receivedSongUrls.size(); i++) {
-                    songTitles.add("Bài hát " + (i + 1));
-                }
-            }
-            if (receivedSongThumbnails != null && receivedSongThumbnails.size() == receivedSongUrls.size()) {
-                songThumbnails.clear();
-                songThumbnails.addAll(receivedSongThumbnails);
-            } else {
-                songThumbnails.clear();
-                for (int i = 0; i < receivedSongUrls.size(); i++) {
-                    songThumbnails.add("");
-                }
-            }
-            currentSongIndex = intent.getIntExtra("currentIndex", 0);
-            Log.d("MusicService", "Received song list: URLs=" + songUrls + ", Titles=" + songTitles + ", Thumbnails=" + songThumbnails + ", Index=" + currentSongIndex);
-        }
+        updateSongList(intent);
 
         if (action != null) {
             switch (action) {
@@ -95,11 +73,13 @@ public class MusicService extends Service {
                     String url = intent.getStringExtra("url");
                     String title = intent.getStringExtra("title");
                     String thumbnail = intent.getStringExtra("thumbnail");
+                    String songId = intent.getStringExtra("songId");
+                    String artist = intent.getStringExtra("artist");
                     if (url != null && !url.isEmpty()) {
-                        playSong(url, title != null ? title : "Không có tiêu đề", thumbnail);
+                        playSong(url, title != null ? title : "Không có tiêu đề", thumbnail, songId, artist);
                     } else {
-                        Log.e("MusicService", "No valid URL provided for ACTION_PLAY");
-                        sendUpdateBroadcast("Không có bài hát", "", ACTION_PAUSE);
+                        Log.e(TAG, "No valid URL provided for ACTION_PLAY");
+                        sendUpdateBroadcast("Không có bài hát", "", "", "", "", ACTION_PAUSE);
                     }
                     break;
                 case ACTION_RESUME:
@@ -122,203 +102,330 @@ public class MusicService extends Service {
                     seekTo(progress);
                     break;
                 case "CHECK_STATE":
-                    // Gửi broadcast trạng thái hiện tại
-                    if (currentSongUrl != null) {
-                        sendUpdateBroadcast(currentSongTitle != null ? currentSongTitle : "Không có tiêu đề",
-                                currentSongThumbnail != null ? currentSongThumbnail : "",
-                                isPlaying ? ACTION_PLAY : ACTION_PAUSE);
-                    } else {
-                        sendUpdateBroadcast("Không có bài hát", "", ACTION_PAUSE);
-                    }
+                    sendCurrentState();
                     break;
                 default:
-                    Log.w("MusicService", "Unknown action: " + action);
+                    Log.w(TAG, "Unknown action: " + action);
             }
         } else {
-            Log.w("MusicService", "No action provided in intent");
+            Log.w(TAG, "No action provided in intent");
         }
 
         return START_STICKY;
     }
 
-    private void playSong(String url, String title, String thumbnail) {
-        Log.d("MusicService", "Attempting to play URL: " + url + ", Title: " + title + ", Thumbnail: " + thumbnail);
-        try {
-            if (mediaPlayer != null) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.stop();
+    private void updateSongList(Intent intent) {
+        if (intent == null) return;
+
+        ArrayList<String> receivedSongUrls = intent.getStringArrayListExtra("songUrls");
+        ArrayList<String> receivedSongTitles = intent.getStringArrayListExtra("songTitles");
+        ArrayList<String> receivedSongThumbnails = intent.getStringArrayListExtra("songThumbnails");
+        ArrayList<String> receivedSongIds = intent.getStringArrayListExtra("songIds");
+        ArrayList<String> receivedSongArtists = intent.getStringArrayListExtra("songArtists");
+
+        if (receivedSongUrls != null && !receivedSongUrls.isEmpty()) {
+            songUrls.clear();
+            songUrls.addAll(receivedSongUrls);
+
+            songTitles.clear();
+            if (receivedSongTitles != null && receivedSongTitles.size() == receivedSongUrls.size()) {
+                songTitles.addAll(receivedSongTitles);
+            } else {
+                for (int i = 0; i < receivedSongUrls.size(); i++) {
+                    songTitles.add("Bài hát " + (i + 1));
                 }
-                mediaPlayer.release();
-                mediaPlayer = null;
             }
 
+            songThumbnails.clear();
+            if (receivedSongThumbnails != null && receivedSongThumbnails.size() == receivedSongUrls.size()) {
+                songThumbnails.addAll(receivedSongThumbnails);
+            } else {
+                for (int i = 0; i < receivedSongUrls.size(); i++) {
+                    songThumbnails.add("");
+                }
+            }
+
+            songIds.clear();
+            if (receivedSongIds != null && receivedSongIds.size() == receivedSongUrls.size()) {
+                songIds.addAll(receivedSongIds);
+            } else {
+                Log.w(TAG, "No song IDs provided, setting empty IDs");
+                for (int i = 0; i < receivedSongUrls.size(); i++) {
+                    songIds.add("");
+                }
+            }
+
+            songArtists.clear();
+            if (receivedSongArtists != null && receivedSongArtists.size() == receivedSongUrls.size()) {
+                songArtists.addAll(receivedSongArtists);
+            } else {
+                for (int i = 0; i < receivedSongUrls.size(); i++) {
+                    songArtists.add("Unknown Artist");
+                }
+            }
+
+            currentSongIndex = intent.getIntExtra("currentIndex", 0);
+            Log.d(TAG, "Updated song list: URLs=" + songUrls.size() + ", IDs=" + songIds.size() + ", Artists=" + songArtists.size() + ", Index=" + currentSongIndex);
+        } else {
+            Log.w(TAG, "Received empty song URLs");
+        }
+    }
+
+    private void sendCurrentState() {
+        if (currentSongUrl != null && !currentSongUrl.isEmpty()) {
+            sendUpdateBroadcast(
+                    currentSongTitle != null ? currentSongTitle : "Không có tiêu đề",
+                    currentSongThumbnail != null ? currentSongThumbnail : "",
+                    currentSongUrl,
+                    currentSongId != null ? currentSongId : "",
+                    currentSongArtist != null ? currentSongArtist : "Unknown Artist",
+                    isPlaying ? ACTION_PLAY : ACTION_PAUSE
+            );
+        } else {
+            sendUpdateBroadcast("Không có bài hát", "", "", "", "", ACTION_PAUSE);
+        }
+        Log.d(TAG, "CHECK_STATE: currentSongUrl=" + currentSongUrl + ", currentSongId=" + currentSongId + ", isPlaying=" + isPlaying);
+    }
+
+    private void playSong(String url, String title, String thumbnail, String songId, String artist) {
+        Log.d(TAG, "Playing song: URL=" + url + ", Title=" + title + ", SongId=" + songId + ", Artist=" + artist);
+        try {
+            // Luôn dừng và làm mới MediaPlayer khi phát bài mới
+            stopCurrentPlayback();
             currentSongUrl = url;
             currentSongTitle = title;
-            currentSongThumbnail = thumbnail;
+            currentSongThumbnail = thumbnail != null ? thumbnail : "";
+            currentSongId = songId != null ? songId : "";
+            currentSongArtist = artist != null ? artist : "Unknown Artist";
+
             mediaPlayer = MediaPlayer.create(this, Uri.parse(url));
             if (mediaPlayer == null) {
-                Log.e("MusicService", "MediaPlayer creation failed for URL: " + url);
-                sendUpdateBroadcast("Không thể phát bài hát", "", ACTION_PAUSE);
+                Log.e(TAG, "MediaPlayer creation failed for URL: " + url);
+                sendUpdateBroadcast("Không thể phát bài hát", "", "", "", "", ACTION_PAUSE);
                 stopForeground(true);
                 return;
             }
-
-            mediaPlayer.setOnErrorListener((mp, what, extra) -> {
-                Log.e("MusicService", "MediaPlayer error: what=" + what + ", extra=" + extra);
-                isPlaying = false;
-                sendUpdateBroadcast("Không thể phát nhạc", "", ACTION_PAUSE);
-                stopForeground(true);
-                return true;
-            });
-
-            mediaPlayer.setOnPreparedListener(mp -> {
-                Log.d("MusicService", "MediaPlayer prepared, starting playback");
-                try {
-                    mediaPlayer.start();
-                    isPlaying = true;
-                    sendUpdateBroadcast(currentSongTitle, currentSongThumbnail, ACTION_PLAY);
-                    updateSeekBar();
-                    updateNotification(true);
-                } catch (Exception e) {
-                    Log.e("MusicService", "Error starting playback: " + e.getMessage());
-                    sendUpdateBroadcast("Không thể bắt đầu phát", "", ACTION_PAUSE);
-                    stopForeground(true);
-                }
-            });
-
-            mediaPlayer.setOnCompletionListener(mp -> {
-                Log.d("MusicService", "Song completed: " + currentSongTitle);
-                nextSong();
-            });
-
+            setupMediaPlayer();
             mediaPlayer.prepareAsync();
-            Log.d("MusicService", "Preparing MediaPlayer async for URL: " + url);
         } catch (Exception e) {
-            Log.e("MusicService", "Error playing song: " + e.getMessage(), e);
-            sendUpdateBroadcast("Không thể phát bài hát", "", ACTION_PAUSE);
+            Log.e(TAG, "Error playing song: " + e.getMessage());
+            sendUpdateBroadcast("Không thể phát bài hát", "", "", "", "", ACTION_PAUSE);
             stopForeground(true);
         }
     }
 
+    private void stopCurrentPlayback() {
+        if (mediaPlayer != null) {
+            try {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
+                mediaPlayer.reset();
+                mediaPlayer.release();
+                Log.d(TAG, "MediaPlayer stopped and released");
+            } catch (Exception e) {
+                Log.e(TAG, "Error stopping MediaPlayer: " + e.getMessage());
+            }
+            mediaPlayer = null;
+        }
+        isPlaying = false;
+        handler.removeCallbacksAndMessages(null);
+        Log.d(TAG, "All playback callbacks cleared");
+    }
+
+    private void setupMediaPlayer() {
+        mediaPlayer.setOnErrorListener((mp, what, extra) -> {
+            Log.e(TAG, "MediaPlayer error: what=" + what + ", extra=" + extra);
+            isPlaying = false;
+            sendUpdateBroadcast("Không thể phát nhạc", "", "", "", "", ACTION_PAUSE);
+            stopForeground(true);
+            return true;
+        });
+
+        mediaPlayer.setOnPreparedListener(mp -> {
+            Log.d(TAG, "MediaPlayer prepared, starting playback for: " + currentSongTitle);
+            try {
+                mediaPlayer.start();
+                isPlaying = true;
+                sendUpdateBroadcast(currentSongTitle, currentSongThumbnail, currentSongUrl, currentSongId, currentSongArtist, ACTION_PLAY);
+                updateSeekBar();
+                updateNotification(true);
+            } catch (Exception e) {
+                Log.e(TAG, "Error starting playback: " + e.getMessage());
+                sendUpdateBroadcast("Không thể bắt đầu phát", "", "", "", "", ACTION_PAUSE);
+                stopForeground(true);
+            }
+        });
+
+        mediaPlayer.setOnCompletionListener(mp -> {
+            Log.d(TAG, "Song completed: " + currentSongTitle);
+            nextSong();
+        });
+    }
+
     private void resumeSong() {
-        Log.d("MusicService", "Resuming song: " + currentSongTitle);
+        Log.d(TAG, "Resuming song: " + currentSongTitle);
         if (mediaPlayer != null && !isPlaying) {
             try {
                 mediaPlayer.start();
                 isPlaying = true;
-                sendUpdateBroadcast(currentSongTitle != null ? currentSongTitle : "Không có tiêu đề",
+                sendUpdateBroadcast(
+                        currentSongTitle != null ? currentSongTitle : "Không có tiêu đề",
                         currentSongThumbnail != null ? currentSongThumbnail : "",
-                        ACTION_RESUME);
+                        currentSongUrl,
+                        currentSongId != null ? currentSongId : "",
+                        currentSongArtist != null ? currentSongArtist : "Unknown Artist",
+                        ACTION_RESUME
+                );
                 updateSeekBar();
                 updateNotification(true);
             } catch (Exception e) {
-                Log.e("MusicService", "Error resuming song: " + e.getMessage());
-                sendUpdateBroadcast(currentSongTitle != null ? currentSongTitle : "Không thể tiếp tục phát",
-                        currentSongThumbnail != null ? currentSongThumbnail : "",
-                        ACTION_PAUSE);
+                Log.e(TAG, "Error resuming song: " + e.getMessage());
+                sendUpdateBroadcast("Không thể tiếp tục phát", "", "", "", "", ACTION_PAUSE);
             }
         } else if (currentSongUrl != null && !currentSongUrl.isEmpty()) {
-            Log.w("MusicService", "MediaPlayer is null or invalid, replaying song");
-            playSong(currentSongUrl, currentSongTitle, currentSongThumbnail);
+            playSong(currentSongUrl, currentSongTitle, currentSongThumbnail, currentSongId, currentSongArtist);
         } else {
-            Log.w("MusicService", "Cannot resume: No valid song loaded");
-            sendUpdateBroadcast("Không có bài hát để tiếp tục", "", ACTION_PAUSE);
+            Log.w(TAG, "Cannot resume: No valid song loaded");
+            sendUpdateBroadcast("Không có bài hát để tiếp tục", "", "", "", "", ACTION_PAUSE);
         }
     }
 
     private void pauseSong() {
-        Log.d("MusicService", "Pausing song: " + currentSongTitle);
+        Log.d(TAG, "Pausing song: " + currentSongTitle);
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             try {
                 mediaPlayer.pause();
                 isPlaying = false;
-                sendUpdateBroadcast(currentSongTitle != null ? currentSongTitle : "Không có tiêu đề",
+                sendUpdateBroadcast(
+                        currentSongTitle != null ? currentSongTitle : "Không có tiêu đề",
                         currentSongThumbnail != null ? currentSongThumbnail : "",
-                        ACTION_PAUSE);
+                        currentSongUrl,
+                        currentSongId != null ? currentSongId : "",
+                        currentSongArtist != null ? currentSongArtist : "Unknown Artist",
+                        ACTION_PAUSE
+                );
                 updateNotification(false);
-                handler.removeCallbacksAndMessages(null); // Dừng update SeekBar khi pause
+                handler.removeCallbacksAndMessages(null);
             } catch (Exception e) {
-                Log.e("MusicService", "Error pausing song: " + e.getMessage());
-                sendUpdateBroadcast(currentSongTitle != null ? currentSongTitle : "Không có tiêu đề",
-                        currentSongThumbnail != null ? currentSongThumbnail : "",
-                        ACTION_PAUSE);
+                Log.e(TAG, "Error pausing song: " + e.getMessage());
             }
         } else {
-            Log.w("MusicService", "Cannot pause: MediaPlayer is null or not playing");
-            sendUpdateBroadcast(currentSongTitle != null ? currentSongTitle : "Không có tiêu đề",
+            sendUpdateBroadcast(
+                    currentSongTitle != null ? currentSongTitle : "Không có tiêu đề",
                     currentSongThumbnail != null ? currentSongThumbnail : "",
-                    ACTION_PAUSE);
+                    currentSongUrl,
+                    currentSongId != null ? currentSongId : "",
+                    currentSongArtist != null ? currentSongArtist : "Unknown Artist",
+                    ACTION_PAUSE
+            );
         }
     }
 
     private void nextSong() {
-        Log.d("MusicService", "Next song");
+        Log.d(TAG, "Next song requested, current index: " + currentSongIndex);
         if (songUrls.isEmpty()) {
-            Log.w("MusicService", "No songs available for next");
-            sendUpdateBroadcast("Không có bài hát tiếp theo", "", ACTION_PAUSE);
+            Log.w(TAG, "No songs available for next");
+            sendUpdateBroadcast("Không có bài hát tiếp theo", "", "", "", "", ACTION_PAUSE);
             stopForeground(true);
             return;
         }
         currentSongIndex = (currentSongIndex + 1) % songUrls.size();
-        currentSongUrl = songUrls.get(currentSongIndex);
-        currentSongTitle = songTitles.isEmpty() ? "Không có tiêu đề" : songTitles.get(currentSongIndex);
-        currentSongThumbnail = songThumbnails.isEmpty() ? "" : songThumbnails.get(currentSongIndex);
-        playSong(currentSongUrl, currentSongTitle, currentSongThumbnail);
+        Log.d(TAG, "New song index: " + currentSongIndex);
+        playCurrentSong();
     }
 
     private void prevSong() {
-        Log.d("MusicService", "Previous song");
+        Log.d(TAG, "Previous song requested, current index: " + currentSongIndex);
         if (songUrls.isEmpty()) {
-            Log.w("MusicService", "No songs available for previous");
-            sendUpdateBroadcast("Không có bài hát trước đó", "", ACTION_PAUSE);
+            Log.w(TAG, "No songs available for previous");
+            sendUpdateBroadcast("Không có bài hát trước đó", "", "", "", "", ACTION_PAUSE);
             stopForeground(true);
             return;
         }
         currentSongIndex = (currentSongIndex - 1 + songUrls.size()) % songUrls.size();
+        Log.d(TAG, "New song index: " + currentSongIndex);
+        playCurrentSong();
+    }
+
+    private void playCurrentSong() {
+        if (songUrls.isEmpty() || currentSongIndex < 0 || currentSongIndex >= songUrls.size()) {
+            Log.e(TAG, "Invalid song index or empty song list");
+            sendUpdateBroadcast("Không có bài hát để phát", "", "", "", "", ACTION_PAUSE);
+            return;
+        }
         currentSongUrl = songUrls.get(currentSongIndex);
         currentSongTitle = songTitles.isEmpty() ? "Không có tiêu đề" : songTitles.get(currentSongIndex);
         currentSongThumbnail = songThumbnails.isEmpty() ? "" : songThumbnails.get(currentSongIndex);
-        playSong(currentSongUrl, currentSongTitle, currentSongThumbnail);
+        currentSongId = songIds.isEmpty() ? "" : songIds.get(currentSongIndex);
+        currentSongArtist = songArtists.isEmpty() ? "Unknown Artist" : songArtists.get(currentSongIndex);
+        Log.d(TAG, "Playing current song: index=" + currentSongIndex + ", URL=" + currentSongUrl + ", Title=" + currentSongTitle);
+        playSong(currentSongUrl, currentSongTitle, currentSongThumbnail, currentSongId, currentSongArtist);
     }
 
     private void shuffleSongs() {
-        Log.d("MusicService", "Shuffling songs");
+        Log.d(TAG, "Shuffling songs");
         if (songUrls.isEmpty()) {
-            Log.w("MusicService", "No songs available to shuffle");
-            sendUpdateBroadcast("Không có bài hát để xáo trộn", "", ACTION_PAUSE);
+            Log.w(TAG, "No songs available to shuffle");
+            sendUpdateBroadcast("Không có bài hát để xáo trộn", "", "", "", "", ACTION_PAUSE);
             stopForeground(true);
             return;
         }
-        Collections.shuffle(songUrls);
-        if (!songTitles.isEmpty()) {
-            Collections.shuffle(songTitles);
+        // Tạo danh sách chỉ số để xáo trộn
+        List<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < songUrls.size(); i++) {
+            indices.add(i);
         }
-        if (!songThumbnails.isEmpty()) {
-            Collections.shuffle(songThumbnails);
+        Collections.shuffle(indices);
+
+        // Tạo danh sách mới theo thứ tự xáo trộn
+        List<String> shuffledUrls = new ArrayList<>();
+        List<String> shuffledTitles = new ArrayList<>();
+        List<String> shuffledThumbnails = new ArrayList<>();
+        List<String> shuffledIds = new ArrayList<>();
+        List<String> shuffledArtists = new ArrayList<>();
+
+        for (int index : indices) {
+            shuffledUrls.add(songUrls.get(index));
+            shuffledTitles.add(songTitles.isEmpty() ? "Bài hát " + (index + 1) : songTitles.get(index));
+            shuffledThumbnails.add(songThumbnails.isEmpty() ? "" : songThumbnails.get(index));
+            shuffledIds.add(songIds.isEmpty() ? "" : songIds.get(index));
+            shuffledArtists.add(songArtists.isEmpty() ? "Unknown Artist" : songArtists.get(index));
         }
+
+        songUrls.clear();
+        songUrls.addAll(shuffledUrls);
+        songTitles.clear();
+        songTitles.addAll(shuffledTitles);
+        songThumbnails.clear();
+        songThumbnails.addAll(shuffledThumbnails);
+        songIds.clear();
+        songIds.addAll(shuffledIds);
+        songArtists.clear();
+        songArtists.addAll(shuffledArtists);
+
         currentSongIndex = 0;
-        currentSongUrl = songUrls.get(currentSongIndex);
-        currentSongTitle = songTitles.isEmpty() ? "Không có tiêu đề" : songTitles.get(currentSongIndex);
-        currentSongThumbnail = songThumbnails.isEmpty() ? "" : songThumbnails.get(currentSongIndex);
-        playSong(currentSongUrl, currentSongTitle, currentSongThumbnail);
+        Log.d(TAG, "Shuffled song list, new index: " + currentSongIndex);
+        playCurrentSong();
     }
 
     private void seekTo(int progress) {
-        Log.d("MusicService", "Seeking to: " + progress);
+        Log.d(TAG, "Seeking to: " + progress);
         if (mediaPlayer != null) {
             try {
                 mediaPlayer.seekTo(progress);
-                sendUpdateBroadcast(currentSongTitle != null ? currentSongTitle : "Không có tiêu đề",
+                sendUpdateBroadcast(
+                        currentSongTitle != null ? currentSongTitle : "Không có tiêu đề",
                         currentSongThumbnail != null ? currentSongThumbnail : "",
-                        isPlaying ? ACTION_PLAY : ACTION_PAUSE);
-                if (isPlaying) {
-                    updateSeekBar(); // Tiếp tục cập nhật SeekBar và thời gian sau khi tua
-                }
+                        currentSongUrl,
+                        currentSongId != null ? currentSongId : "",
+                        currentSongArtist != null ? currentSongArtist : "Unknown Artist",
+                        isPlaying ? ACTION_PLAY : ACTION_PAUSE
+                );
+                if (isPlaying) updateSeekBar();
             } catch (Exception e) {
-                Log.e("MusicService", "Error seeking: " + e.getMessage());
+                Log.e(TAG, "Error seeking: " + e.getMessage());
             }
-        } else {
-            Log.w("MusicService", "Cannot seek: MediaPlayer is null");
         }
     }
 
@@ -331,40 +438,34 @@ public class MusicService extends Service {
                     try {
                         int currentPosition = mediaPlayer.getCurrentPosition();
                         int duration = mediaPlayer.getDuration();
-                        sendUpdateBroadcast(currentSongTitle != null ? currentSongTitle : "Không có tiêu đề",
-                                currentSongThumbnail != null ? currentSongThumbnail : "",
-                                ACTION_PLAY);
-                        Log.d("MusicService", "SeekBar update: position=" + currentPosition + ", duration=" + duration);
+                        sendUpdateBroadcast(currentSongTitle, currentSongThumbnail, currentSongUrl, currentSongId, currentSongArtist, ACTION_PLAY);
+                        Log.d(TAG, "SeekBar update: position=" + currentPosition + ", duration=" + duration);
                         handler.postDelayed(this, 1000);
                     } catch (Exception e) {
-                        Log.e("MusicService", "Error updating SeekBar: " + e.getMessage());
+                        Log.e(TAG, "Error updating SeekBar: " + e.getMessage());
                     }
                 }
             }
         }, 0);
     }
 
-    private void sendUpdateBroadcast(String songTitle, String thumbnail, String action) {
-        Log.d("MusicService", "Sending broadcast: title=" + songTitle + ", thumbnail=" + thumbnail + ", action=" + action);
+    private void sendUpdateBroadcast(String songTitle, String thumbnail, String url, String songId, String artist, String action) {
+        Log.d(TAG, "Sending broadcast: title=" + songTitle + ", thumbnail=" + thumbnail + ", songId=" + songId + ", artist=" + artist + ", action=" + action);
         Intent updateIntent = new Intent("UPDATE_UI");
         updateIntent.putExtra("title", songTitle);
         updateIntent.putExtra("thumbnail", thumbnail);
-        if (action != null) {
-            updateIntent.putExtra("action", action);
-        }
-        if (mediaPlayer != null) {
-            try {
-                updateIntent.putExtra("duration", mediaPlayer.getDuration());
-                updateIntent.putExtra("currentPosition", mediaPlayer.getCurrentPosition());
-            } catch (Exception e) {
-                Log.e("MusicService", "Error getting MediaPlayer info: " + e.getMessage());
-                updateIntent.putExtra("duration", 0);
-                updateIntent.putExtra("currentPosition", 0);
-            }
-        } else {
-            updateIntent.putExtra("duration", 0);
-            updateIntent.putExtra("currentPosition", 0);
-        }
+        updateIntent.putExtra("url", url);
+        updateIntent.putExtra("songId", songId);
+        updateIntent.putExtra("artist", artist);
+        updateIntent.putExtra("action", action);
+        updateIntent.putExtra("duration", mediaPlayer != null ? mediaPlayer.getDuration() : 0);
+        updateIntent.putExtra("currentPosition", mediaPlayer != null ? mediaPlayer.getCurrentPosition() : 0);
+        updateIntent.putStringArrayListExtra("SONG_URLS", new ArrayList<>(songUrls));
+        updateIntent.putStringArrayListExtra("SONG_TITLES", new ArrayList<>(songTitles));
+        updateIntent.putStringArrayListExtra("SONG_THUMBNAILS", new ArrayList<>(songThumbnails));
+        updateIntent.putStringArrayListExtra("SONG_IDS", new ArrayList<>(songIds));
+        updateIntent.putStringArrayListExtra("SONG_ARTISTS", new ArrayList<>(songArtists));
+        updateIntent.putExtra("SONG_INDEX", currentSongIndex);
         sendBroadcast(updateIntent);
     }
 
@@ -405,26 +506,17 @@ public class MusicService extends Service {
                         isPlaying ? "Pause" : "Play",
                         pausePendingIntent
                 )
-                .setOngoing(true);
+                .setOngoing(isPlaying);
 
-        Notification notification = builder.build();
-        startForeground(NOTIFICATION_ID, notification);
-        Log.d("MusicService", "Notification updated: " + currentSongTitle + ", isPlaying=" + isPlaying);
+        startForeground(NOTIFICATION_ID, builder.build());
+        Log.d(TAG, "Notification updated: " + currentSongTitle + ", isPlaying=" + isPlaying);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("MusicService", "onDestroy");
-        if (mediaPlayer != null) {
-            try {
-                mediaPlayer.release();
-            } catch (Exception e) {
-                Log.e("MusicService", "Error releasing MediaPlayer: " + e.getMessage());
-            }
-            mediaPlayer = null;
-        }
-        handler.removeCallbacksAndMessages(null);
+        Log.d(TAG, "onDestroy");
+        stopCurrentPlayback();
         stopForeground(true);
     }
 

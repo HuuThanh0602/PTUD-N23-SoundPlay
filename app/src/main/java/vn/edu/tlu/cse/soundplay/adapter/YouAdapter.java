@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import vn.edu.tlu.cse.soundplay.R;
+import vn.edu.tlu.cse.soundplay.data.model.Music;
 import vn.edu.tlu.cse.soundplay.data.model.Playlist;
 
 public class YouAdapter extends RecyclerView.Adapter<YouAdapter.YouViewHolder> {
@@ -22,6 +23,7 @@ public class YouAdapter extends RecyclerView.Adapter<YouAdapter.YouViewHolder> {
     public YouAdapter(List<Playlist> playLists) {
         this.playLists = playLists;
     }
+
 
     @NonNull
     @Override

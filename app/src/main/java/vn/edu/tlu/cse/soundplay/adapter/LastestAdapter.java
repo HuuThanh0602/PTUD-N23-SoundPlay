@@ -1,7 +1,6 @@
 package vn.edu.tlu.cse.soundplay.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,21 +18,19 @@ import java.util.List;
 
 import vn.edu.tlu.cse.soundplay.R;
 import vn.edu.tlu.cse.soundplay.data.model.Music;
-import vn.edu.tlu.cse.soundplay.ui.PlaySongActivity;
+import vn.edu.tlu.cse.soundplay.data.repository.MusicRepository;
+import vn.edu.tlu.cse.soundplay.util.MusicPlayerUtil;
 
 public class LastestAdapter extends RecyclerView.Adapter<LastestAdapter.LastestViewHolder> {
 
     private List<Music> musicList;
     private Context context;
+    private MusicRepository musicRepository;
 
-    public LastestAdapter(List<Music> musicList) {
-        this.musicList = musicList;
-    }
 
-    public void setData(List<Music> newList) {
-        this.musicList = newList;
-        notifyDataSetChanged();
-        Log.d("LastestAdapter", "Updated music list with size: " + (newList != null ? newList.size() : 0));
+    public LastestAdapter(List<Music> musicList, MusicRepository musicRepository) {
+        this.musicList = musicList != null ? musicList : new ArrayList<>();
+        this.musicRepository = musicRepository;
     }
 
     @NonNull
@@ -52,55 +49,33 @@ public class LastestAdapter extends RecyclerView.Adapter<LastestAdapter.LastestV
             return;
         }
 
+        // Hiển thị tiêu đề
         holder.txtTitle.setText(music.getTitle() != null ? music.getTitle() : "Không có tiêu đề");
+
+        // Hiển thị hình ảnh
         Glide.with(context)
                 .load(music.getThumbnail())
                 .placeholder(R.drawable.ic_music)
                 .error(R.drawable.ic_avatar)
                 .into(holder.imgCover);
 
+        // Xử lý sự kiện nhấn item
         holder.itemView.setOnClickListener(v -> {
-            String url = music.getUrl();
-            if (url == null || url.isEmpty()) {
-                Log.e("LastestAdapter", "Invalid URL for song: " + music.getTitle());
-                return;
-            }
-
-            Intent intent = new Intent(context, PlaySongActivity.class);
-            intent.putExtra("MUSIC_ID", music.getId());
-            intent.putExtra("MUSIC_TITLE", music.getTitle());
-            intent.putExtra("MUSIC_THUMBNAIL", music.getThumbnail());
-            intent.putExtra("MUSIC_URL", url);
-
-            // Gửi danh sách bài hát
-            ArrayList<String> songUrls = new ArrayList<>();
-            ArrayList<String> songTitles = new ArrayList<>();
-            ArrayList<String> songThumbnails = new ArrayList<>();
-            for (Music m : musicList) {
-                songUrls.add(m.getUrl());
-                songTitles.add(m.getTitle());
-                songThumbnails.add(m.getThumbnail());
-            }
-            intent.putStringArrayListExtra("songUrls", songUrls);
-            intent.putStringArrayListExtra("songTitles", songTitles);
-            intent.putStringArrayListExtra("songThumbnails", songThumbnails);
-            intent.putExtra("currentIndex", position);
-
-            Log.d("LastestAdapter", "Starting PlaySongActivity with URL: " + url + ", Title: " + music.getTitle());
-            context.startActivity(intent);
+            MusicPlayerUtil.openMusicPlayer(context, music, musicList, position);
+            musicRepository.saveRecentPlay(music);
         });
     }
 
     @Override
     public int getItemCount() {
-        return musicList != null ? musicList.size() : 0;
+        return musicList.size();
     }
 
-    public static class LastestViewHolder extends RecyclerView.ViewHolder {
+    static class LastestViewHolder extends RecyclerView.ViewHolder {
         ImageView imgCover;
         TextView txtTitle;
 
-        public LastestViewHolder(@NonNull View itemView) {
+        LastestViewHolder(View itemView) {
             super(itemView);
             imgCover = itemView.findViewById(R.id.imgCover);
             txtTitle = itemView.findViewById(R.id.txtTitle);

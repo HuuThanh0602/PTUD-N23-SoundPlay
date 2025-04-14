@@ -19,13 +19,25 @@
         <activity
             android:name=".ui.HomeActivity"
             android:exported="true"
-            android:theme="@style/Theme.SoundPlay">
+            android:theme="@style/Theme.SoundPlay"
+            android:label="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".ui.PlaylistDetailActivity"
+            android:exported="false"
+            android:label="" />
+        <activity
+            android:name=".ui.ProfileActivity"
+            android:exported="false"
+            android:label="" />
+        <activity
+            android:name=".ui.LibraryActivity"
+            android:exported="false"
+            android:label="" />
         <activity
             android:name=".ui.SearchActivity"
             android:exported="false"
@@ -40,7 +52,8 @@
             android:name=".service.MusicService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="mediaPlayback" />
+            android:foregroundServiceType="mediaPlayback"
+            tools:ignore="ForegroundServicePermission" />
 
     </application>
 </manifest>

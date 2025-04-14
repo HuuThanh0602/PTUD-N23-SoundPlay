@@ -7,85 +7,101 @@
     android:background="@color/brackground">
 
     <!-- Nội dung chính -->
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:layout_height="match_parent"
+        android:layout_above="@id/mini_player"
+        android:fillViewport="true">
 
-        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp">
+            android:orientation="vertical"
+            android:padding="12dp">
 
-            <ImageView
-                android:id="@+id/imgNote"
-                android:layout_width="44dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_music3" />
+            <!-- Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal">
 
+                <ImageView
+                    android:id="@+id/imgNote"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_music3" />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tìm kiếm"
+                    android:textColor="#00E0E6"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Search Bar -->
+            <LinearLayout
+                android:id="@+id/search_layout"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_search_edittext"
+                android:paddingStart="12dp"
+                android:paddingEnd="20dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/icon_search"
+                    android:contentDescription="Search icon" />
+
+                <EditText
+                    android:id="@+id/search_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:paddingStart="8dp"
+                    android:textColor="#000000"
+                    android:textColorHint="#888888"
+                    android:hint="Tìm kiếm bài hát..."
+                    android:inputType="text" />
+            </LinearLayout>
+
+            <!-- Tiêu đề gợi ý thể loại -->
             <TextView
-                android:id="@+id/tvTitle"
+                android:id="@+id/tvExplore"
+                android:layout_marginTop="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tìm kiếm"
-                android:textColor="#00E0E6"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:text="Khám phá nội dung mới"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
 
-        <!-- Search Bar -->
-        <LinearLayout
-            android:id="@+id/search_layout"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal"
-            android:background="@drawable/bg_search_edittext"
-            android:layout_margin="8dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="20dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/icon_search"
-                android:contentDescription="Search icon" />
-
-            <EditText
-                android:id="@+id/search_bar"
-                android:layout_width="0dp"
+            <!-- Danh sách thể loại -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvplaylist"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:paddingStart="8dp"
-                android:textColor="#000000"
-                android:textColorHint="#888888"
-                android:hint="Tìm kiếm bài hát..."
-                android:inputType="text" />
+                android:layout_marginTop="8dp"
+                android:visibility="visible" />
         </LinearLayout>
+    </ScrollView>
 
-        <!-- Tiêu đề gợi ý thể loại -->
-        <TextView
-            android:id="@+id/tvExplore"
-            android:layout_marginTop="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Khám phá nội dung mới"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
-
-        <!-- Danh sách thể loại (hiển thị mặc định) -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvplaylist"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:visibility="visible" />
-    </LinearLayout>
+    <!-- Mini Player -->
+    <include
+        android:id="@+id/mini_player"
+        layout="@layout/mini_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/custom_navbar" />
 
     <!-- Bottom Navigation -->
     <LinearLayout
@@ -135,7 +151,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/search"
-                android:tint="#39C0D4" />
+                app:tint="#39C0D4" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -158,7 +174,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/library"
-                android:tint="#FFFFFF" />
+                app:tint="#FFFFFF" />
 
             <TextView
                 android:layout_width="wrap_content"

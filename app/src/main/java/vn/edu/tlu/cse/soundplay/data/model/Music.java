@@ -1,5 +1,6 @@
 package vn.edu.tlu.cse.soundplay.data.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -7,12 +8,18 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "musics")
 public class Music {
+    @PrimaryKey
+    @NonNull
     @SerializedName("id")
     private String id;
     private String title;
     private String thumbnail;
     private String url;
     private String artist;
+
+    public Music() {
+
+    }
 
     public Music(String title, String thumbnail, String url, String artist) {
         this.title = title;

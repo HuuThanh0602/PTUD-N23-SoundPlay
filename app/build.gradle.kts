@@ -72,7 +72,10 @@ dependencies {
 
     implementation ("de.hdodenhof:circleimageview:3.1.0")
 
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
+
     implementation ("org.greenrobot:eventbus:3.3.1")
+    implementation ("androidx.media:media:1.7.0")
 
 
 }
