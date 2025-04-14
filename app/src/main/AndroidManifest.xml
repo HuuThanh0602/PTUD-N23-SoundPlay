@@ -27,7 +27,7 @@
             android:exported="false"
             android:theme="@style/Theme.SoundPlay"/>
         <activity
-            android:name=".ui.HomeActivity"
+            android:name=".ui.PlaySongActivity"
             android:exported="true"
             android:theme="@style/Theme.SoundPlay">
             <intent-filter>

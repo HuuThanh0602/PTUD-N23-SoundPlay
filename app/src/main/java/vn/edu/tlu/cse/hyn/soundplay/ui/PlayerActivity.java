@@ -40,7 +40,7 @@ public class PlayerActivity extends AppCompatActivity {
         btnBackPre = findViewById(R.id.btnBackPre);
         btnNextPre = findViewById(R.id.btnNextPre);
         btnFavorite = findViewById(R.id.btnFavorite);
-        btnShare = findViewById(R.id.btnShare);
+        //btnShare = findViewById(R.id.btnShare);
         seekBar = findViewById(R.id.seekBar);
         txtStart = findViewById(R.id.txtStart);
         txtEnd = findViewById(R.id.txtEnd);
