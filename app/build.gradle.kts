@@ -69,4 +69,10 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.13.2")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+    implementation ("org.greenrobot:eventbus:3.3.1")
+
+
 }
