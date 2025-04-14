@@ -122,10 +122,9 @@ public class MusicRepository {
     public void getRecentPlays(RecentCallback callback) {
         List<Music> recentList = new ArrayList<>();
         // Giả lập: lấy 3 bài gần đây
-        recentList.add(new Music("Bắc Bling", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/e/3/3/9/e3399633d5289da5cb7c4292a41f0f67.jpg", "https://th.bing.com/th/id/OIP.4akau9Zyzq-ioaE0S_YVrwHaHa?rs=1&pid=ImgDetMain","Nhiều nghệ sĩ"));
-        recentList.add(new Music("1 Bầu Trời 2 Khung Cửa Sổ", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/b/6/e/a/b6ea425010047f6d3f9ca107cb34b12e.jpg", "https://th.bing.com/th/id/OIP.4akau9Zyzq-ioaE0S_YVrwHaHa?rs=1&pid=ImgDetMain","Long Bling"));
-        recentList.add(new Music("Như Ngọn Thủy Triều ", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/f/0/1/1/f01149f7efa5125f3120ace2d68c3140.jpg", "https://th.bing.com/th/id/OIP.4akau9Zyzq-ioaE0S_YVrwHaHa?rs=1&pid=ImgDetMain","DICKSON"));
-        recentList.add(new Music("Thủy Triều", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/8/4/7/4/8474eb9fd1a3aa78b974b4c104ff45fc.jpg", "https://th.bing.com/th/id/OIP.4akau9Zyzq-ioaE0S_YVrwHaHa?rs=1&pid=ImgDetMain","Quang Hùng MasterD"));
+        recentList.add(new Music("Bắc Bling", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/e/3/3/9/e3399633d5289da5cb7c4292a41f0f67.jpg", "https://a128-z3.zmdcdn.me/2667eeae76859ab34357aff014bc0811?authen=exp=1744788228~acl=/2667eeae76859ab34357aff014bc0811*~hmac=ff3317358d1f99928bd7769920697f7b","Nhiều nghệ sĩ"));
+        recentList.add(new Music("Như Ngọn Thủy Triều ", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/f/0/1/1/f01149f7efa5125f3120ace2d68c3140.jpg", "https://a128-z3.zmdcdn.me/3483908df9ffc10fbc7ed42db55c548e?authen=exp=1744788222~acl=/3483908df9ffc10fbc7ed42db55c548e*~hmac=1142bd66aca67ffe938e9c53af17152d","DICKSON"));
+        recentList.add(new Music("Thủy Triều", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/8/4/7/4/8474eb9fd1a3aa78b974b4c104ff45fc.jpg", "https://a128-z3.zmdcdn.me/945f3ce83dd0eb820aa0e05cce267c5b?authen=exp=1744787976~acl=/945f3ce83dd0eb820aa0e05cce267c5b*~hmac=f422409c089f5b91af22c141a9c2151b","Quang Hùng MasterD"));
 
         callback.onSuccess(recentList);
     }

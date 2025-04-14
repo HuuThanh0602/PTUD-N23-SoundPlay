@@ -1,5 +1,6 @@
 package vn.edu.tlu.cse.ntl.soundplay.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import vn.edu.tlu.cse.ntl.soundplay.R;
 import vn.edu.tlu.cse.ntl.soundplay.data.model.Music;
+import vn.edu.tlu.cse.ntl.soundplay.ui.PlaySongActivity;
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHolder> {
 
@@ -44,6 +46,18 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         Glide.with(holder.itemView.getContext())
                 .load(music.getThumbnail())
                 .into(holder.ivThumbnail);
+
+
+        holder.ivThumbnail.setOnClickListener(v -> {
+            Intent intent = new Intent(holder.itemView.getContext(), PlaySongActivity.class);
+            intent.putExtra("TITLE", music.getTitle());
+            intent.putExtra("ARTIST", music.getArtist());
+            intent.putExtra("THUMBNAIL", music.getThumbnail());
+            intent.putExtra("URL", music.getUrl()); // Đường dẫn đến file nhạc
+            holder.itemView.getContext().startActivity(intent);
+        });
+
+
     }
 
     @Override

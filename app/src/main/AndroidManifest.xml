@@ -41,6 +41,12 @@
             android:exported="false"
             android:label="" />
 
+        <activity
+            android:name=".ui.PlaySongActivity"
+            android:exported="false"
+            android:label="" />
+
+
 
 
     </application>
