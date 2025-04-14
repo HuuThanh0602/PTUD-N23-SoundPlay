@@ -38,6 +38,7 @@ public class MusicRepository {
         void onSuccess(List<Playlist> top100List);
         void onError(String errorMessage);
     }
+
     public void search(String keyword, final SearchCallback callback) {
         Call<Map<String, Object>> call = apiService.search(keyword);
 
@@ -127,6 +128,34 @@ public class MusicRepository {
         recentList.add(new Music("Thủy Triều", "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/8/4/7/4/8474eb9fd1a3aa78b974b4c104ff45fc.jpg", "https://a128-z3.zmdcdn.me/945f3ce83dd0eb820aa0e05cce267c5b?authen=exp=1744787976~acl=/945f3ce83dd0eb820aa0e05cce267c5b*~hmac=f422409c089f5b91af22c141a9c2151b","Quang Hùng MasterD"));
 
         callback.onSuccess(recentList);
+    }
+
+    public interface PlayListCallback {
+        void onSuccess(List<Music> playList);
+        void onError(String errorMessage);
+    }
+
+    public void getPlayList(String id,final PlayListCallback callback) {
+        Call<Map<String, Object>> call = apiService.getDetailPlaylist(id);
+
+        call.enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(@NonNull Call<Map<String, Object>> call, @NonNull Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Object dataObj = response.body().get("data");
+                    String jsonArray = gson.toJson(dataObj);
+                    Type listType = new TypeToken<List<Music>>() {}.getType();
+                    List<Music> playList = gson.fromJson(jsonArray, listType);
+                    callback.onSuccess(playList);
+                } else {
+                    callback.onError("Lỗi: Dữ liệu trả về không hợp lệ.");
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<Map<String, Object>> call, @NonNull Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
     }
 
     public interface RecentCallback {

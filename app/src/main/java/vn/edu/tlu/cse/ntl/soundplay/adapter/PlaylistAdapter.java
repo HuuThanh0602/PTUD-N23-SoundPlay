@@ -1,5 +1,6 @@
 package vn.edu.tlu.cse.ntl.soundplay.adapter;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import vn.edu.tlu.cse.ntl.soundplay.R;
 import vn.edu.tlu.cse.ntl.soundplay.data.model.Playlist;
+import vn.edu.tlu.cse.ntl.soundplay.ui.PlaylistDetailActivity;
 
 
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder> {
@@ -56,7 +58,22 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
             holder.image.setImageResource(R.drawable.icon_kpop);
             Log.d("PlaylistAdapter", "Thumbnail is empty for playlist: " + playlist.getTitle());
         }
+
+        // ✅ Thêm OnClick vào ảnh playlist
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(holder.itemView.getContext(), PlaylistDetailActivity.class);
+
+            // Truyền các thông tin cần thiết qua Intent
+            intent.putExtra("playlistId", playlist.getId());  // Truyền ID
+            intent.putExtra("playlistName", playlist.getTitle());  // Tên Playlist
+            intent.putExtra("playlistThumbnail", playlist.getThumbnail());  // Ảnh Playlist
+
+            // Bắt đầu PlaylistDetailActivity
+            holder.itemView.getContext().startActivity(intent);
+
+        });
     }
+
 
     @Override
     public int getItemCount() {

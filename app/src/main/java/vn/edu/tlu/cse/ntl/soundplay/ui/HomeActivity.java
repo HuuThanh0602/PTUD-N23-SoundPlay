@@ -21,7 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import vn.edu.tlu.cse.ntl.soundplay.R;
 import vn.edu.tlu.cse.ntl.soundplay.adapter.LastestAdapter;
 import vn.edu.tlu.cse.ntl.soundplay.adapter.MusicAdapter;
-import vn.edu.tlu.cse.ntl.soundplay.adapter.YouAdapter;
+import vn.edu.tlu.cse.ntl.soundplay.adapter.PlaylistAdapter;
 import vn.edu.tlu.cse.ntl.soundplay.data.model.Music;
 import vn.edu.tlu.cse.ntl.soundplay.data.model.Playlist;
 import vn.edu.tlu.cse.ntl.soundplay.data.repository.MusicRepository;
@@ -86,8 +86,8 @@ public class HomeActivity extends AppCompatActivity {
                 for (Playlist playList : top100List) {
                     Log.d("Top100", "ID: " + playList.getId() + ", Tên: " + playList.getTitle() + ", Ảnh: " + playList.getThumbnail());
                 }
-                YouAdapter youAdapter = new YouAdapter(top100List);
-                recyclerForYou.setAdapter(youAdapter);
+                PlaylistAdapter playlistAdapter = new PlaylistAdapter(top100List);
+                recyclerForYou.setAdapter(playlistAdapter);
             }
 
             @Override

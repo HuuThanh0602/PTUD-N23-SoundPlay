@@ -17,6 +17,7 @@ import java.util.List;
 import vn.edu.tlu.cse.ntl.soundplay.R;
 import vn.edu.tlu.cse.ntl.soundplay.data.model.Music;
 import vn.edu.tlu.cse.ntl.soundplay.ui.PlaySongActivity;
+import vn.edu.tlu.cse.ntl.soundplay.ui.PlaylistDetailActivity;
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHolder> {
 
@@ -56,6 +57,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
             intent.putExtra("URL", music.getUrl()); // Đường dẫn đến file nhạc
             holder.itemView.getContext().startActivity(intent);
         });
+
 
 
     }

@@ -10,6 +10,7 @@ public interface ApiService {
     @GET("song")
     Call<Object> getSong();
     @GET("playlist")
+    Call<Map<String, Object>> getDetailPlaylist(@Query("id") String id);@GET("playlist")
     Call<Object> getDetailPlaylist();
     @GET("home")
     Call<Object> getHome();
@@ -36,6 +37,8 @@ public interface ApiService {
     Call<Object> getCategoryMV();
     @GET("video")
     Call<Object> getVideo(@Query("id") String id);
+
+
 
 
 }

@@ -46,6 +46,11 @@
             android:exported="false"
             android:label="" />
 
+        <activity
+            android:name=".ui.PlaylistDetailActivity"
+            android:exported="false"
+            android:label="" />
+
 
 
 
