@@ -80,7 +80,8 @@
 
         <FrameLayout
             android:layout_width="56dp"
-            android:layout_height="56dp">
+            android:layout_height="56dp"
+            >
 
             <View
                 android:layout_width="match_parent"
@@ -88,8 +89,9 @@
                 android:background="@drawable/round_blue" />
 
             <ImageView
+                android:id="@+id/favorite"
                 android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:src="@drawable/heart" />
         </FrameLayout>
@@ -220,7 +222,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/library"
-                android:tint="#39C0D4" />
+                app:tint="#39C0D4" />
 
             <TextView
                 android:layout_width="wrap_content"

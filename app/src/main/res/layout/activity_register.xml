@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/login"
+    android:id="@+id/register"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/brackground"
@@ -50,25 +49,49 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/title_login"
+        android:id="@+id/title_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="130dp"
-        android:layout_marginBottom="30dp"
-        android:text="Đăng Nhập"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="20dp"
+        android:text="Đăng Ký"
         android:textColor="@color/black"
         android:textSize="30sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/labelEmail"
+        android:id="@+id/labelName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/layoutTitle"
         android:layout_alignParentStart="true"
         android:layout_marginStart="26dp"
-        android:layout_marginTop="135dp"
+        android:layout_marginTop="105dp"
+        android:text="Họ Tên"
+        android:textColor="@color/black"
+        android:textSize="18dp" />
+
+    <EditText
+        android:id="@+id/edtName"
+        android:layout_width="330dp"
+        android:layout_height="44dp"
+        android:layout_below="@id/labelName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/rounded_input"
+        android:hint="Nhập họ tên"
+        android:inputType="textPersonName"
+        android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/labelEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtName"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="10dp"
         android:text="Email"
         android:textColor="@color/black"
         android:textSize="18dp" />
@@ -81,11 +104,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
         android:background="@drawable/rounded_input"
-        android:hint="example@example"
+        android:hint="example@example.com"
         android:inputType="textEmailAddress"
         android:padding="10dp" />
 
-    <!-- Ô nhập Password -->
     <TextView
         android:id="@+id/labelPassword"
         android:layout_width="wrap_content"
@@ -105,64 +127,49 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
         android:background="@drawable/rounded_input"
-        android:hint="Password"
+        android:hint="Nhập mật khẩu"
+        android:inputType="textPassword"
+        android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/labelConfirmPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtPassword"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="10dp"
+        android:text="Xác Nhận Mật Khẩu"
+        android:textColor="@color/black"
+        android:textSize="18dp" />
+
+    <EditText
+        android:id="@+id/edtConfirmPassword"
+        android:layout_width="324dp"
+        android:layout_height="44dp"
+        android:layout_below="@id/labelConfirmPassword"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/rounded_input"
+        android:hint="Xác nhận mật khẩu"
         android:inputType="textPassword"
         android:padding="10dp" />
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnRegister"
         android:layout_width="253dp"
         android:layout_height="56dp"
-        android:layout_below="@id/edtPassword"
+        android:layout_below="@id/edtConfirmPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:background="@drawable/button_login"
-        android:text="Đăng nhập"
+        android:text="Đăng ký"
         android:textColor="@color/white" />
-
-    <LinearLayout
-        android:id="@+id/registerLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnLogin"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tva"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bạn đã có tài khoản chưa?"
-            android:textColor="@color/black"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/tvRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" Đăng ký"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tvForgotPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/registerLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="Quên mật khẩu"
-        android:textColor="@color/black"
-        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/tvMessage"
         android:layout_width="380dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvForgotPassword"
+        android:layout_below="@id/btnRegister"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text=""

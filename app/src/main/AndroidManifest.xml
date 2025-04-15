@@ -17,7 +17,7 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".ui.HomeActivity"
+            android:name=".ui.LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.SoundPlay"
             android:label="">
@@ -26,18 +26,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.HomeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SoundPlay"
+            android:label="" />
+
         <activity
             android:name=".ui.PlaylistDetailActivity"
             android:exported="false"
             android:label="" />
+
         <activity
             android:name=".ui.ProfileActivity"
             android:exported="false"
             android:label="" />
+
         <activity
             android:name=".ui.LibraryActivity"
             android:exported="false"
             android:label="" />
+
         <activity
             android:name=".ui.SearchActivity"
             android:exported="false"
@@ -45,6 +55,31 @@
 
         <activity
             android:name=".ui.PlaySongActivity"
+            android:exported="false"
+            android:label="" />
+
+        <activity
+            android:name=".ui.FavouriteActivity"
+            android:exported="false"
+            android:label="" />
+
+        <activity
+            android:name=".ui.RegisterActivity"
+            android:exported="false"
+            android:label="" />
+
+        <activity
+            android:name=".ui.VerifyOtpActivity"
+            android:exported="false"
+            android:label="" />
+
+        <activity
+            android:name=".ui.ForgotPasswordActivity"
+            android:exported="false"
+            android:label="" />
+
+        <activity
+            android:name=".ui.ResetPasswordActivity"
             android:exported="false"
             android:label="" />
 

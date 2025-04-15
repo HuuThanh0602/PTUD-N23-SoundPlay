@@ -27,6 +27,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import vn.edu.tlu.cse.soundplay.R;
+import vn.edu.tlu.cse.soundplay.data.model.Favourite;
+import vn.edu.tlu.cse.soundplay.data.repository.FavouriteRepository;
 import vn.edu.tlu.cse.soundplay.data.repository.MusicRepository;
 import vn.edu.tlu.cse.soundplay.service.MusicService;
 
@@ -43,6 +45,8 @@ public class PlaySongActivity extends AppCompatActivity {
     private String currentSongId;
     private ObjectAnimator rotationAnimator;
     private MusicRepository musicRepository;
+    private FavouriteActivity favouriteActivity;
+    private FavouriteRepository favouriteRepository; // Thêm repository
     private List<LrcLine> lrcLines = new ArrayList<>();
     private Runnable lyricsUpdater;
     private boolean isFromMiniPlayer = false;
@@ -57,6 +61,8 @@ public class PlaySongActivity extends AppCompatActivity {
 
         // Khởi tạo MusicRepository
         musicRepository = new MusicRepository(this);
+        // Khởi tạo FavouriteRepository
+        favouriteRepository = new FavouriteRepository(getApplication());
 
         // Khởi tạo các view
         txtSongTitle = findViewById(R.id.txtSongTitle);
@@ -86,7 +92,6 @@ public class PlaySongActivity extends AppCompatActivity {
         ArrayList<String> songIds = intent.getStringArrayListExtra("SONG_IDS");
         int songIndex = intent.getIntExtra("SONG_INDEX", 0);
 
-        // Kiểm tra nếu đến từ mini player
         isFromMiniPlayer = (currentSongUrl != null && !currentSongUrl.isEmpty());
 
         rotationAnimator = ObjectAnimator.ofFloat(imgSongThumbnail, "rotation", 0f, 360f);
@@ -122,6 +127,16 @@ public class PlaySongActivity extends AppCompatActivity {
         txtCurrentTime.setText("0:00");
         txtTotalTime.setText("0:00");
         txtLyrics.setText("Đang tải lời bài hát...");
+
+        // Kiểm tra trạng thái yêu thích ban đầu
+        if (currentSongId != null && !currentSongId.isEmpty()) {
+            new Thread(() -> {
+                Favourite existing = favouriteRepository.findByIdSync(currentSongId);
+                runOnUiThread(() -> {
+                    btnFavorite.setImageResource(existing != null ? R.drawable.ic_heart_filled : R.drawable.heart);
+                });
+            }).start();
+        }
 
         // Thiết lập sự kiện
         btnBack.setOnClickListener(v -> {
@@ -176,10 +191,8 @@ public class PlaySongActivity extends AppCompatActivity {
             }
         });
 
-        // Đăng ký BroadcastReceiver
         registerReceiver();
 
-        // Kiểm tra trạng thái MusicService
         if (currentSongUrl != null && !currentSongUrl.isEmpty()) {
             Intent checkIntent = new Intent(this, MusicService.class);
             checkIntent.setAction("CHECK_STATE");
@@ -191,6 +204,35 @@ public class PlaySongActivity extends AppCompatActivity {
             txtLyrics.setText("Không có bài hát để tải lời.");
             btnPlay.setEnabled(false);
         }
+    }
+
+    private void toggleFavorite() {
+        Log.d("PlaySongActivity", "Toggling favorite for id: " + currentSongId);
+
+        if (currentSongId == null || currentSongId.isEmpty()) {
+            Log.w("PlaySongActivity", "Invalid id, cannot toggle favorite");
+            return;
+        }
+
+        // Tạo đối tượng Favourite
+        Favourite favourite = new Favourite();
+        favourite.setId(currentSongId);
+        favourite.setTitle(txtSongTitle.getText().toString());
+        favourite.setThumbnail((String) imgSongThumbnail.getTag());
+        favourite.setArtist(txtArtist.getText().toString());
+        favourite.setUrl(currentSongUrl);
+
+        // Gọi toggleFavourite từ repository
+        favouriteRepository.toggleFavourite(favourite);
+
+        // Cập nhật giao diện nút yêu thích
+        new Thread(() -> {
+            Favourite existing = favouriteRepository.findByIdSync(currentSongId); // Sửa ở đây
+            runOnUiThread(() -> {
+                btnFavorite.setImageResource(existing != null ? R.drawable.ic_heart_filled : R.drawable.heart);
+                Log.d("PlaySongActivity", existing != null ? "Added to favorites: " + currentSongId : "Removed from favorites: " + currentSongId);
+            });
+        }).start();
     }
 
     @Override
@@ -380,11 +422,6 @@ public class PlaySongActivity extends AppCompatActivity {
             Log.d("PlaySongActivity", "Sending ACTION_RESUME");
         }
         startService(serviceIntent);
-    }
-
-    private void toggleFavorite() {
-        Log.d("PlaySongActivity", "Toggling favorite");
-        // TODO: Cập nhật trạng thái yêu thích
     }
 
     private String formatTime(int milliseconds) {
