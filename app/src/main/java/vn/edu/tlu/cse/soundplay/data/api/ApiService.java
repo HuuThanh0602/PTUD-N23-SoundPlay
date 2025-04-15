@@ -19,7 +19,6 @@ public interface ApiService {
     Call<Map<String, Object>> search(@Query("keyword") String keyword);
     @GET("chart")
     Call<Object> getChartHome();
-    //bài hát mới nhất
     @GET("new-release")
     Call<Map<String, Object>> getNewReleaseChart();
     @GET("info")

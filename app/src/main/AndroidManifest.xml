@@ -48,6 +48,11 @@
             android:exported="false"
             android:label="" />
 
+        <activity
+            android:name=".ui.FavouriteActivity"
+            android:exported="false"
+            android:label="" />
+
         <service
             android:name=".service.MusicService"
             android:enabled="true"
