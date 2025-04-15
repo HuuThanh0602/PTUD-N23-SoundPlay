@@ -86,8 +86,6 @@ public class LoginActivity extends AppCompatActivity {
                                     .getString("KEY_NAME", "Hello!");
                             String savedAvatarBase64 = getSharedPreferences("user_profile", MODE_PRIVATE)
                                     .getString("KEY_AVATAR", "");
-                            Log.d(TAG, "Saved name: " + savedName);
-                            Log.d(TAG, "Saved avatarBase64: " + savedAvatarBase64);
 
                             tvMessage.setText("Đăng nhập thành công");
                             Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();

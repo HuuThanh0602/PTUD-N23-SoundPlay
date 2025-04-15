@@ -95,6 +95,7 @@
         android:background="@drawable/rounded_input"
         android:hint="Nhập mã OTP"
         android:inputType="number"
+        android:textColor="@color/black"
         android:maxLength="6"
         android:padding="10dp" />
 

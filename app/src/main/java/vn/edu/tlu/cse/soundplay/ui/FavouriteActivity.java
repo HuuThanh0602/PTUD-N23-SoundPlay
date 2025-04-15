@@ -21,7 +21,7 @@ public class FavouriteActivity extends BaseActivity {
     private FavouriteAdapter adapter;
     private FavouriteRepository viewModel;
 
-    private ImageView iconHome, iconProfile, iconLibrary;
+    private ImageView iconHome, iconProfile, iconLibrary,iconSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +50,22 @@ public class FavouriteActivity extends BaseActivity {
         iconHome = findViewById(R.id.home);
         iconLibrary = findViewById(R.id.library);
         iconProfile = findViewById(R.id.profile);
+        iconSearch=findViewById(R.id.search);
 
-        // Trang chủ
+        iconLibrary.setOnClickListener(v -> {
+            Intent intent = new Intent(FavouriteActivity.this, LibraryActivity.class);
+            startActivity(intent);
+            finish(); // kết thúc trang hiện tại để tránh back về
+        });
+        iconSearch.setOnClickListener(v -> {
+            Intent intent = new Intent(FavouriteActivity.this, SearchActivity.class);
+            startActivity(intent);
+            finish();
+        });
         iconHome.setOnClickListener(v -> {
             Intent intent = new Intent(FavouriteActivity.this, HomeActivity.class);
             startActivity(intent);
-            finish(); // kết thúc trang hiện tại để tránh back về
+            finish();
         });
 
         // Hồ sơ

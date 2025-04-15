@@ -58,14 +58,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                 .load(music.getThumbnail())
                 .into(holder.ivThumbnail);
 
-//        holder.ivThumbnail.setOnClickListener(v -> {
-//            Intent intent = new Intent(holder.itemView.getContext(), PlaySongActivity.class);
-//            intent.putExtra("TITLE", music.getTitle());
-//            intent.putExtra("ARTIST", music.getArtist());
-//            intent.putExtra("THUMBNAIL", music.getThumbnail());
-//            intent.putExtra("URL", music.getUrl());
-//            holder.itemView.getContext().startActivity(intent);
-//        });
 
         holder.itemView.setOnClickListener(v -> {
             MusicPlayerUtil.openMusicPlayer(context, music, musicList, position);

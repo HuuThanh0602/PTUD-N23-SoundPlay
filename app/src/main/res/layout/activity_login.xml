@@ -83,7 +83,9 @@
         android:background="@drawable/rounded_input"
         android:hint="example@example"
         android:inputType="textEmailAddress"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:textColor="@color/black"
+         />
 
     <!-- Ô nhập Password -->
     <TextView
@@ -106,6 +108,7 @@
         android:layout_marginTop="5dp"
         android:background="@drawable/rounded_input"
         android:hint="Password"
+        android:textColor="@color/black"
         android:inputType="textPassword"
         android:padding="10dp" />
 

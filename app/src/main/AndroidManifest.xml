@@ -2,16 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:enableOnBackInvokedCallback="true"
-    package="vn.edu.tlu.cse.soundplay">
+    package="vn.edu.tlu.cse.soundplay"
+    >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
+        android:label="@string/app_name"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_welcome"
+        android:roundIcon="@drawable/ic_welcome"
         android:supportsRtl="true"
         android:theme="@style/Theme.SoundPlay"
         tools:targetApi="31">

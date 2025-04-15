@@ -30,6 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.tlu.cse.soundplay.R;
 import vn.edu.tlu.cse.soundplay.data.repository.AuthRepository;
+import vn.edu.tlu.cse.soundplay.service.MusicService;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -132,13 +133,15 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Xử lý nút đăng xuất
         btnLogout.setOnClickListener(v -> {
-            // Xóa dữ liệu trong SharedPreferences (sử dụng authPrefs và profilePrefs đã khai báo)
+            Intent musicServiceIntent = new Intent(ProfileActivity.this, MusicService.class);
+            stopService(musicServiceIntent);
             authPrefs.edit().clear().apply();
             profilePrefs.edit().clear().apply();
 
             // Hiển thị thông báo đăng xuất
             Toast.makeText(ProfileActivity.this, "Tài khoản đã đăng xuất", Toast.LENGTH_LONG).show();
 
+            // Chuyển về LoginActivity và xóa stack
             Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

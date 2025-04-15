@@ -34,7 +34,6 @@ public class HomeActivity extends BaseActivity {
     private CircleImageView avatarHome;
     private TextView txtUserName;
     private MusicRepository musicRepository;
-    private MusicAdapter musicAdapter;
     private ImageView searchIcon, libraryIcon, profileIcon;
 
 

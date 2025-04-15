@@ -138,8 +138,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                 String songUrl = intent.getStringExtra("url");
                 String action = intent.getStringExtra("action");
 
-                Log.d("BaseActivity", "Received songId: " + songId); // Thêm log
-
+                Log.d("BaseActivity", "Received songId: " + songId);
+                
                 // Kiểm tra dữ liệu hợp lệ trước khi hiển thị
                 if (songTitle != null && !songTitle.isEmpty() && !songTitle.contains("Lỗi") &&
                         songUrl != null && !songUrl.isEmpty()) {

@@ -81,6 +81,8 @@
         android:layout_marginTop="5dp"
         android:background="@drawable/rounded_input"
         android:hint="Nhập họ tên"
+
+        android:textColor="@color/black"
         android:inputType="textPersonName"
         android:padding="10dp" />
 
@@ -100,6 +102,8 @@
         android:id="@+id/edtEmail"
         android:layout_width="330dp"
         android:layout_height="44dp"
+
+        android:textColor="@color/black"
         android:layout_below="@id/labelEmail"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
@@ -123,6 +127,8 @@
         android:id="@+id/edtPassword"
         android:layout_width="324dp"
         android:layout_height="44dp"
+
+        android:textColor="@color/black"
         android:layout_below="@id/labelPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
@@ -146,6 +152,8 @@
         android:id="@+id/edtConfirmPassword"
         android:layout_width="324dp"
         android:layout_height="44dp"
+
+        android:textColor="@color/black"
         android:layout_below="@id/labelConfirmPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"

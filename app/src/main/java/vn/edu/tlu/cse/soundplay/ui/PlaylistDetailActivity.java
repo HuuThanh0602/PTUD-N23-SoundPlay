@@ -58,11 +58,10 @@ public class PlaylistDetailActivity extends BaseActivity {
         String playlistName = getIntent().getStringExtra("playlistName");
         String playlistThumbnail = getIntent().getStringExtra("playlistThumbnail");
         initMiniPlayer();
-        // Khởi tạo các View cho tên playlist và ảnh playlist
+
         tvPlaylistName = findViewById(R.id.tvPlaylistName);
         imgPlaylist = findViewById(R.id.imgPlaylist);
 
-        // Cập nhật UI với các thông tin nhận được
         if (playlistName != null) {
             tvPlaylistName.setText(playlistName);
         }
@@ -80,8 +79,6 @@ public class PlaylistDetailActivity extends BaseActivity {
         } else {
             Log.e("PlaylistDetail", "Không có playlistId truyền vào Intent");
         }
-
-
 
         // Tìm kiếm
         searchIcon.setOnClickListener(v -> {
@@ -101,21 +98,16 @@ public class PlaylistDetailActivity extends BaseActivity {
             finish();
         });
 
-        // Hồ sơ
         libraryIcon.setOnClickListener(v -> {
             startActivity(new Intent(PlaylistDetailActivity.this, LibraryActivity.class));
             finish();
         });
-
     }
 
-    // Hàm tải bài hát trong playlist
     private void loadPlaylistSongs(String playlistId) {
         musicRepository.getPlayList(playlistId, new MusicRepository.PlayListCallback() {
             @Override
             public void onSuccess(List<Music> playList) {
-                Log.d("PlaylistDetail", "Số bài hát: " + playList.size());
-                // Cập nhật dữ liệu cho Adapter
                 musicAdapter.setData(playList);
             }
 

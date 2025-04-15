@@ -21,8 +21,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnStart.setOnClickListener(v -> {
 
             Intent intent;
-                intent = new Intent(WelcomeActivity.this, LoginActivity.class);
-
+            intent = new Intent(WelcomeActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
         });
