@@ -32,6 +32,55 @@ Sound Play là ứng dụng phát nhạc trực tuyến được thiết kế ch
 
 ## 🖼️ Giao Diện Ứng Dụng
 
+### 🔐 Màn hình Đăng nhập / Đăng ký
+<p align="center">
+  <img src="image/welcome.png" alt="Welcome" width="30%"/>
+    <img src="image/login.png" alt="Đăng nhập" width="30%"/>
+  <img src="image/res.png" alt="Đăng ký" width="30%"/>
+</p>
+
+### 🔑 Màn hình Quên mật khẩu
+<p align="center">
+  <img src="image/forget.png" alt="Quên mật khẩu" width="30%"/>
+    <img src="image/otp.png" alt="Xác minh Email" width="30%"/>
+  <img src="image/pwnew.png" alt="Đặt lại mật khẩu mới" width="30%"/>
+</p>
+
+
+### 🏠 Màn hình Trang chủ
+<p align="center">
+  <img src="image/home.png" alt="Trang chủ" width="30%"/>
+</p>
+
+### 🎵 Màn hình Trình phát nhạc
+<p align="center">
+  <img src="image/home1.png" alt="Trang chủ" width="30%"/>
+    <img src="image/playlist.png" alt="Tìm kiếm" width="30%"/>
+  <img src="image/song.png" alt="Thư Viện" width="30%"/>
+</p>
+
+### 📚 Màn hình Thư viện
+<p align="center">
+  <img src="image/lib.png" alt="Thư Viện" width="30%"/>
+    <img src="image/like.png" alt="Bài hát yêu thích" width="30%"/>
+  
+</p>
+
+### 📚 Màn hình tìm kiếm
+<p align="center">
+    <img src="image//search.png" alt="Tìm kiếm" width="30%"/>
+    <img src="image/search1.png" alt="Tìm kiếm theo keyword" width="30%"/>
+
+</p>
+
+### 📚 Màn hình hồ sơ
+<p align="center">
+      <img src="image/pro.png" alt="Hồ sơ" width="30%"/>
+
+</p>
+
+
+
 ## 🚀 Hướng Dẫn Cài Đặt
 - Bước 1: Clone dự án về máy:
    ```bash
