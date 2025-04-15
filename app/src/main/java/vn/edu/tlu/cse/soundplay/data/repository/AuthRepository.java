@@ -1,6 +1,9 @@
 package vn.edu.tlu.cse.soundplay.data.repository;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +18,9 @@ public class AuthRepository {
 
     public AuthRepository() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.phukienzzz.shop/api/") // Thay bằng domain thật của bạn
+                .baseUrl("https://www.phukienzzz.shop/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
         apiService = retrofit.create(ApiService.class);
     }
 
@@ -62,4 +64,12 @@ public class AuthRepository {
 
         return apiService.resetPassword(request);
     }
+    public Call<Map<String, Object>> updateName(String name, String email) {
+        Map<String, String> nameData = new HashMap<>();
+        nameData.put("name", name);
+        nameData.put("email", email);
+
+        return apiService.updateName(nameData);
+    }
+
 }

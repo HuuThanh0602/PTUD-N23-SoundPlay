@@ -224,24 +224,8 @@ public class MusicRepository {
             try {
                 List<Music> recentList = musicDAO.getRecentPlays();
                 if (recentList == null || recentList.isEmpty()) {
-                    Log.d("MusicRepository", "No recent plays found in database, inserting sample data...");
-
-                    // Tạo danh sách 10 bản ghi mẫu
-                    List<Music> sampleMusicList = new ArrayList<>();
-                    for (int i = 1; i <= 10; i++) {
-                        Music music = new Music();
-                        music.setId("sample_" + i);
-                        music.setTitle("Sample Title " + i);
-                        music.setThumbnail("https://example.com/thumb" + i + ".jpg");
-                        music.setUrl("https://example.com/music" + i + ".mp3");
-                        music.setArtist("Sample Artist " + i);
-                        sampleMusicList.add(music);
-                        musicDAO.insert(music);
-                    }
-
-                    // Lấy lại danh sách sau khi insert
-                    recentList = musicDAO.getRecentPlays();
-                    callback.onSuccess(recentList);
+                    Log.d("MusicRepository", "No recent plays found in database.");
+                    callback.onSuccess(new ArrayList<>());
                 } else {
                     Log.d("MusicRepository", "Recent plays loaded: " + recentList.size() + " items");
                     callback.onSuccess(recentList);

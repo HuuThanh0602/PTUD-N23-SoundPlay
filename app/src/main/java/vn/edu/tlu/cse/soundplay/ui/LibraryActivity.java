@@ -57,28 +57,25 @@ public class LibraryActivity extends BaseActivity {
         if (searchIcon != null) {
             searchIcon.setOnClickListener(v -> {
                 startActivity(new Intent(LibraryActivity.this, SearchActivity.class));
-                // finish(); // Removed to allow back navigation
             });
         }
 
         if (favourite != null) {
             favourite.setOnClickListener(v -> {
                 startActivity(new Intent(LibraryActivity.this, FavouriteActivity.class));
-                // finish(); // Removed to allow back navigation
             });
         }
 
         if (homeIcon != null) {
             homeIcon.setOnClickListener(v -> {
                 startActivity(new Intent(LibraryActivity.this, HomeActivity.class));
-                // finish(); // Removed to allow back navigation
             });
         }
 
         if (profileIcon != null) {
             profileIcon.setOnClickListener(v -> {
                 startActivity(new Intent(LibraryActivity.this, ProfileActivity.class));
-                // finish(); // Removed to allow back navigation
+
             });
         }
     }
