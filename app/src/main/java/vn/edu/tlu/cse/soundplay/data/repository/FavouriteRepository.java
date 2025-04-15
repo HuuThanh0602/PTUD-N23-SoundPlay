@@ -32,26 +32,9 @@ public class FavouriteRepository extends AndroidViewModel {
         return allFavourites;
     }
 
-    public void insert(Favourite favourite) {
-        executorService.execute(() -> favouriteDao.insert(favourite));
-    }
-
-    public void delete(Favourite favourite) {
-        executorService.execute(() -> favouriteDao.delete(favourite));
-    }
-
-    public void deleteById(String id) { // Đổi từ deleteByMusicId
-        executorService.execute(() -> {
-            Favourite existing = favouriteDao.findById(id); // Sửa thành findById
-            if (existing != null) {
-                favouriteDao.delete(existing);
-            }
-        });
-    }
-
     public void toggleFavourite(Favourite favourite) {
         executorService.execute(() -> {
-            Favourite existing = favouriteDao.findById(favourite.getId()); // Sửa thành findById
+            Favourite existing = favouriteDao.findById(favourite.getId());
             if (existing != null) {
                 favouriteDao.delete(existing);
             } else {
@@ -60,8 +43,8 @@ public class FavouriteRepository extends AndroidViewModel {
         });
     }
 
-    public Favourite findByIdSync(String id) { // Đổi từ findByMusicIdSync
-        return favouriteDao.findById(id); // Sửa thành findById
+    public Favourite findByIdSync(String id) {
+        return favouriteDao.findById(id);
     }
 
     @Override

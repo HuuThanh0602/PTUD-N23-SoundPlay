@@ -21,9 +21,15 @@ import androidx.annotation.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import vn.edu.tlu.cse.soundplay.R;
+import vn.edu.tlu.cse.soundplay.data.repository.AuthRepository;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -34,6 +40,8 @@ public class ProfileActivity extends AppCompatActivity {
     private CircleImageView imgAvatar;
     private EditText edtName, edtEmail;
     private Button btnLogout;
+    private SharedPreferences profilePrefs; // Khai báo ở đây để dùng chung
+    private SharedPreferences authPrefs;    // Khai báo ở đây để dùng chung
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +58,8 @@ public class ProfileActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
 
         // Load dữ liệu SharedPreferences
-        SharedPreferences profilePrefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences authPrefs = getSharedPreferences("auth", MODE_PRIVATE);
+        profilePrefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        authPrefs = getSharedPreferences("auth", MODE_PRIVATE);
         edtName.setText(profilePrefs.getString("KEY_NAME", ""));
         edtEmail.setText(authPrefs.getString("email", ""));
         String avatarBase64 = profilePrefs.getString("KEY_AVATAR", "");
@@ -62,12 +70,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         // Xử lý nút quay lại
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed(); // hoặc finish();
-            }
-        });
+        btnBack.setOnClickListener(v -> onBackPressed());
 
         // Nút chọn ảnh
         btnEditAvatar.setOnClickListener(v -> {
@@ -79,35 +82,67 @@ public class ProfileActivity extends AppCompatActivity {
         // Nút lưu tên
         btnSave.setOnClickListener(v -> {
             String newName = edtName.getText().toString().trim();
-            SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
 
-            if (!newName.isEmpty()) {
-                editor.putString("KEY_NAME", newName);
-                editor.apply();
-                Toast.makeText(this, "Tên đã được lưu", Toast.LENGTH_SHORT).show();
-            } else {
+            if (newName.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập tên", Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
 
-        // Xử lý nút đăng xuất
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Xóa dữ liệu trong SharedPreferences
-                SharedPreferences authPrefs = getSharedPreferences("auth", MODE_PRIVATE);
-                SharedPreferences profilePrefs = getSharedPreferences("user_profile", MODE_PRIVATE);
-                authPrefs.edit().clear().apply();
-                profilePrefs.edit().clear().apply();
+            // Lấy email từ SharedPreferences (sử dụng authPrefs đã khai báo)
+            String email = authPrefs.getString("email", "");
 
-                // Hiển thị thông báo đăng xuất
-                Toast.makeText(ProfileActivity.this, "Tài khoản đã đăng xuất", Toast.LENGTH_LONG).show();
-
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Không tìm thấy email, vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
+                return;
             }
+
+            // Gọi API updateName từ AuthRepository
+            AuthRepository authRepo = new AuthRepository();
+            authRepo.updateName(newName, email).enqueue(new Callback<Map<String, Object>>() {
+                @Override
+                public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        // Lưu tên vào SharedPreferences (sử dụng profilePrefs đã khai báo)
+                        profilePrefs.edit().putString("KEY_NAME", newName).apply();
+
+                        Toast.makeText(ProfileActivity.this, "Tên đã được cập nhật", Toast.LENGTH_SHORT).show();
+                    } else {
+                        String errorMsg = "Lỗi khi cập nhật tên";
+                        if (response.errorBody() != null) {
+                            try {
+                                errorMsg = response.errorBody().string();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        Toast.makeText(ProfileActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                    Toast.makeText(ProfileActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        // Xử lý nút đăng xuất
+        btnLogout.setOnClickListener(v -> {
+            // Xóa dữ liệu trong SharedPreferences (sử dụng authPrefs và profilePrefs đã khai báo)
+            authPrefs.edit().clear().apply();
+            profilePrefs.edit().clear().apply();
+
+            // Hiển thị thông báo đăng xuất
+            Toast.makeText(ProfileActivity.this, "Tài khoản đã đăng xuất", Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -125,11 +160,9 @@ public class ProfileActivity extends AppCompatActivity {
                 selectedBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
                 String encodedImage = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
 
-                SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                prefs.edit().putString("KEY_AVATAR", encodedImage).apply();
+                profilePrefs.edit().putString("KEY_AVATAR", encodedImage).apply();
 
                 Toast.makeText(this, "Đã cập nhật ảnh đại diện", Toast.LENGTH_SHORT).show();
-
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Không thể chọn ảnh", Toast.LENGTH_SHORT).show();

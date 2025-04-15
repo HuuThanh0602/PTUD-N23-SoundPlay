@@ -15,7 +15,7 @@ import vn.edu.tlu.cse.soundplay.R;
 import vn.edu.tlu.cse.soundplay.adapter.FavouriteAdapter;
 import vn.edu.tlu.cse.soundplay.data.repository.FavouriteRepository;
 
-public class FavouriteActivity extends AppCompatActivity {
+public class FavouriteActivity extends BaseActivity {
 
     private RecyclerView rvFavourites;
     private FavouriteAdapter adapter;
@@ -28,7 +28,7 @@ public class FavouriteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.acitivity_favourite); // Đảm bảo layout có tên đúng!
 
-
+        initMiniPlayer();
 
         // 1. Ánh xạ RecyclerView
         rvFavourites = findViewById(R.id.rvCategories);

@@ -22,7 +22,7 @@ public abstract class AppDatabase extends RoomDatabase {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class, "music_db2")
-                    .fallbackToDestructiveMigration() // Allow destructive migration
+                    .fallbackToDestructiveMigration()
                     .build();
         }
         return INSTANCE;
