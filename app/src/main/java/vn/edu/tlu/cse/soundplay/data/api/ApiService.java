@@ -3,7 +3,9 @@ package vn.edu.tlu.cse.soundplay.data.api;
 import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface ApiService {
@@ -25,8 +27,7 @@ public interface ApiService {
     Call<Object> getInfoSong(@Query("id") String id);
     @GET("artist")
     Call<Object> getArtist(@Query("name") String name);
-    @GET("artist-song")
-    Call<Object> getListArtistSong(@Query("id") String id);
+
     @GET("lyric")
     Call<Map<String, Object>> getLyric(@Query("id") String id);
 
@@ -36,4 +37,19 @@ public interface ApiService {
     Call<Object> getCategoryMV();
     @GET("video")
     Call<Object> getVideo(@Query("id") String id);
+
+    @POST("register")
+    Call<Map<String, Object>> register(@Body Map<String, String> request);
+
+    @POST("verify-otp")
+    Call<Map<String, Object>> verifyOtp(@Body Map<String, String> request);
+
+    @POST("login")
+    Call<Map<String, Object>> login(@Body Map<String, String> request);
+
+    @POST("forgot-password")
+    Call<Map<String, Object>> forgotPassword(@Body Map<String, String> request);
+
+    @POST("reset-password")
+    Call<Map<String, Object>> resetPassword(@Body Map<String, String> request);
 }

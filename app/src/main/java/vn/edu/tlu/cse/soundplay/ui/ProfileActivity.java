@@ -2,7 +2,6 @@ package vn.edu.tlu.cse.soundplay.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,7 +24,6 @@ import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import vn.edu.tlu.cse.soundplay.R;
-
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -52,9 +50,11 @@ public class ProfileActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
 
         // Load dữ liệu SharedPreferences
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        edtName.setText(prefs.getString("KEY_NAME", ""));
-        String avatarBase64 = prefs.getString("KEY_AVATAR", "");
+        SharedPreferences profilePrefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences authPrefs = getSharedPreferences("auth", MODE_PRIVATE);
+        edtName.setText(profilePrefs.getString("KEY_NAME", ""));
+        edtEmail.setText(authPrefs.getString("email", ""));
+        String avatarBase64 = profilePrefs.getString("KEY_AVATAR", "");
         if (!avatarBase64.isEmpty()) {
             byte[] decodedBytes = Base64.decode(avatarBase64, Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
@@ -68,7 +68,6 @@ public class ProfileActivity extends AppCompatActivity {
                 onBackPressed(); // hoặc finish();
             }
         });
-
 
         // Nút chọn ảnh
         btnEditAvatar.setOnClickListener(v -> {
@@ -91,24 +90,25 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-
         // Xử lý nút đăng xuất
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = edtName.getText().toString().trim();
-                String email = edtEmail.getText().toString().trim();
+                // Xóa dữ liệu trong SharedPreferences
+                SharedPreferences authPrefs = getSharedPreferences("auth", MODE_PRIVATE);
+                SharedPreferences profilePrefs = getSharedPreferences("user_profile", MODE_PRIVATE);
+                authPrefs.edit().clear().apply();
+                profilePrefs.edit().clear().apply();
 
-                Toast.makeText(ProfileActivity.this,
-                        "Tài khoản đã đăng xuất", Toast.LENGTH_LONG).show();
+                // Hiển thị thông báo đăng xuất
+                Toast.makeText(ProfileActivity.this, "Tài khoản đã đăng xuất", Toast.LENGTH_LONG).show();
 
-                // chuyển về màn hình đăng nhập
-//                    Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent);
+                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
             }
         });
-
     }
 
     @Override
